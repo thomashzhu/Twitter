@@ -30,8 +30,9 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // TODO: Substitute with custom cell later
-        return UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TweetCell", for: indexPath)
+        cell.textLabel?.text = tweets[indexPath.row].text
+        return cell
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -20,7 +20,7 @@ class TwitterClient: BDBOAuth1SessionManager {
     
     func homeTimeline(success: @escaping ([Tweet]) -> Void, failure: @escaping (Error) -> Void) {
         get("1.1/statuses/home_timeline.json",
-            parameters: nil,
+            parameters: ["count": 20],
             progress: nil,
             success: { (_, response: Any?) in
                 if let dictionaries = response as? [[String: AnyObject]] {
