@@ -20,6 +20,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let _ = User.currentUser {
             print("There is a current user")
             
+            if let twitterClient = TwitterClient.shared {
+                if !twitterClient.isAuthorized {
+                    twitterClient.loadAccessToken()
+                }
+            }
+            
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let vc = storyboard.instantiateViewController(withIdentifier: "TweetsNavigationController")
             

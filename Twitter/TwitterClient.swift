@@ -8,8 +8,11 @@
 
 import UIKit
 import BDBOAuth1Manager
+import KeychainAccess
 
 class TwitterClient: BDBOAuth1SessionManager {
+    
+    static let bundleIdenfitier = "com.thomaszhu.Twitter"
     
     static let shared = TwitterClient(baseURL: URL(string: "https://api.twitter.com"),
                                                                     consumerKey: "rJGhM2NZQdkIeawgHNxNNnaGL",
@@ -19,6 +22,8 @@ class TwitterClient: BDBOAuth1SessionManager {
     var loginFailure: ((Error) -> Void)?
     
     func homeTimeline(success: @escaping ([Tweet]) -> Void, failure: @escaping (Error) -> Void) {
+//        requestSerializer.saveAccessToken(BDBOAuth1Credential(token: "833459060158590977-aWysWC6I0MoG4Ln7XqKap4YlmXL4NJL", secret: "v4ggfJFksmeqBnBadgD1Bu3KWsxuY2yi5H8njfdijeYqk", expiration: Calendar.current.date(byAdding: .day, value: 1, to: Date())))
+        
         get("1.1/statuses/home_timeline.json",
             parameters: ["count": 20],
             progress: nil,
@@ -97,6 +102,13 @@ class TwitterClient: BDBOAuth1SessionManager {
                          method: "POST",
                          requestToken: requestToken,
                          success: { (accessToken: BDBOAuth1Credential?) in
+                            
+                            if let accessToken = accessToken {
+                                let keychain = Keychain(service: TwitterClient.bundleIdenfitier)
+                                keychain["access_token"] = accessToken.token
+                                keychain["access_token_secret"] = accessToken.secret
+                            }
+                            
                             self.currentAccount(
                                 success: { (user) in
                                     User.currentUser = user
@@ -112,5 +124,11 @@ class TwitterClient: BDBOAuth1SessionManager {
                                 self.loginFailure?(error)
                             }}
         )
+    }
+    
+    func loadAccessToken() {
+        let keychain = Keychain(service: TwitterClient.bundleIdenfitier)
+        let accessToken = BDBOAuth1Credential(token: keychain["access_token"], secret: keychain["access_token_secret"], expiration: nil)
+        requestSerializer.saveAccessToken(accessToken)
     }
 }
