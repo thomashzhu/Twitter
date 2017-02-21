@@ -19,6 +19,10 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
 
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.estimatedRowHeight = 120
+        
+        let nib = UINib(nibName: "TweetCell", bundle: nil)
+        tableView.register(nib, forCellReuseIdentifier: "TweetCell")
         
         TwitterClient.shared?.homeTimeline(
             success: { (tweets) in
@@ -30,9 +34,14 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TweetCell", for: indexPath)
-        cell.textLabel?.text = tweets[indexPath.row].text
-        return cell
+
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "TweetCell", for: indexPath) as? TweetCell {
+            let tweet = tweets[indexPath.row]
+            cell.tweet = tweet
+            return cell
+        }
+        
+        return UITableViewCell()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
