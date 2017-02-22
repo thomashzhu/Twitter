@@ -182,8 +182,12 @@ class TwitterClient: BDBOAuth1SessionManager {
         })
     }
     
-    func favorite(id: Int, success: @escaping (Void) -> Void, failure: @escaping (Error) -> Void) {
-        post("1.1/favorites/create.json",
+    enum FavoriteMode {
+        case Create, Destroy
+    }
+    
+    func favorite(mode: FavoriteMode, id: Int, success: @escaping (Void) -> Void, failure: @escaping (Error) -> Void) {
+        post("1.1/favorites/\(mode == .Create ? "create" : "destroy").json",
             parameters: ["id": id],
             progress: nil,
             success: { (_, _) in

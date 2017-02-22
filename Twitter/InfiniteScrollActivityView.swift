@@ -9,8 +9,9 @@
 import UIKit
 
 class InfiniteScrollActivityView: UIView {
-    var activityIndicatorView: UIActivityIndicatorView = UIActivityIndicatorView()
-    static let defaultHeight:CGFloat = 60.0
+    
+    var activityIndicatorView = UIActivityIndicatorView()
+    static let defaultHeight: CGFloat = 60.0
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)

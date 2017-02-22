@@ -82,11 +82,12 @@ class TweetCell: UITableViewCell {
     }
     
     @IBAction func retweetButtonTapped(_ sender: AnyObject) {
-        if let id = tweet.id {
+        if let id = tweet.id, let retweeted = tweet.retweeted {
             TwitterClient.shared?.retweet(id: id,
                                           success: { (_) in
+                                            self.tweet.retweeted = !retweeted
                                             DispatchQueue.main.async {
-                                                self.configureRetweetButton(retweeted: true)
+                                                self.configureRetweetButton(retweeted: !retweeted)
                                             }},
                                           failure: { (error) in
                                             print(error.localizedDescription)}
@@ -95,13 +96,15 @@ class TweetCell: UITableViewCell {
     }
     
     @IBAction func favoriteButtonTapped(_ sender: AnyObject) {
-        if let id = tweet.id {
-            TwitterClient.shared?.favorite(id: id,
-                                          success: { (_) in
+        if let id = tweet.id, let favorited = tweet.favorited {
+            TwitterClient.shared?.favorite(mode: (favorited ? .Destroy : .Create),
+                                           id: id,
+                                           success: { (_) in
+                                            self.tweet.favorited = !favorited
                                             DispatchQueue.main.async {
-                                                self.configureFavoriteButton(favorited: true)
+                                                self.configureFavoriteButton(favorited: !favorited)
                                             }},
-                                          failure: { (error) in
+                                           failure: { (error) in
                                             print(error.localizedDescription)}
             )
         }

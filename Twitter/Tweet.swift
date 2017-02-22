@@ -23,8 +23,8 @@ class Tweet: NSObject {
     
     // Retweet & Favorite
     let id: Int?
-    let retweeted: Bool?
-    let favorited: Bool?
+    var retweeted: Bool?
+    var favorited: Bool?
     
     init(dictionary: [String: AnyObject]) {
         
