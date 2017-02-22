@@ -22,8 +22,6 @@ class TwitterClient: BDBOAuth1SessionManager {
     var loginFailure: ((Error) -> Void)?
     
     func homeTimeline(success: @escaping ([Tweet]) -> Void, failure: @escaping (Error) -> Void) {
-//        requestSerializer.saveAccessToken(BDBOAuth1Credential(token: "833459060158590977-aWysWC6I0MoG4Ln7XqKap4YlmXL4NJL", secret: "v4ggfJFksmeqBnBadgD1Bu3KWsxuY2yi5H8njfdijeYqk", expiration: Calendar.current.date(byAdding: .day, value: 1, to: Date())))
-        
         get("1.1/statuses/home_timeline.json",
             parameters: ["count": 20],
             progress: nil,
@@ -87,6 +85,7 @@ class TwitterClient: BDBOAuth1SessionManager {
     func logout() {
         User.currentUser = nil
         deauthorize()
+        requestSerializer.removeAccessToken()
         
         NotificationCenter.default.post(
             name: User.userDidLogoutNotification,
@@ -105,8 +104,11 @@ class TwitterClient: BDBOAuth1SessionManager {
                             
                             if let accessToken = accessToken {
                                 let keychain = Keychain(service: TwitterClient.bundleIdenfitier)
-                                keychain["access_token"] = accessToken.token
-                                keychain["access_token_secret"] = accessToken.secret
+                                if let token = accessToken.token,
+                                    let secret = accessToken.secret {
+                                    keychain["access_token"] = token
+                                    keychain["access_token_secret"] = secret
+                                }
                             }
                             
                             self.currentAccount(
@@ -126,9 +128,47 @@ class TwitterClient: BDBOAuth1SessionManager {
         )
     }
     
-    func loadAccessToken() {
+    func loadAccessToken() -> Bool {
+        requestSerializer.removeAccessToken()
+        
         let keychain = Keychain(service: TwitterClient.bundleIdenfitier)
-        let accessToken = BDBOAuth1Credential(token: keychain["access_token"], secret: keychain["access_token_secret"], expiration: nil)
-        requestSerializer.saveAccessToken(accessToken)
+        print(keychain["access_token"])
+        print(keychain["access_token_secret"])
+        if let accessToken = keychain["access_token"],
+            let accessTokenSecret = keychain["access_token_secret"] {
+            
+            let generatedToken = BDBOAuth1Credential(token: accessToken, secret: accessTokenSecret, expiration: nil)
+            requestSerializer.saveAccessToken(generatedToken)
+            
+            return true
+        }
+        return false
+    }
+    
+    func retweet(id: Int, success: @escaping (Void) -> Void, failure: @escaping (Error) -> Void) {
+        print(id)
+        post("1.1/statuses/retweet/\(id).json",
+            parameters: nil,
+            progress: nil,
+            success: { (_, response: Any?) in
+                if let _ = response as? [String: AnyObject] {
+                    success()
+                }
+            },
+            failure: { (_, error: Error) in
+                failure(error)
+        })
+    }
+    
+    func favorite(id: Int, success: @escaping (Void) -> Void, failure: @escaping (Error) -> Void) {
+        post("1.1/favorites/create.json",
+            parameters: ["id": id],
+            progress: nil,
+            success: { (_, _) in
+                success()
+            },
+            failure: { (_, error: Error) in
+                failure(error)
+        })
     }
 }

@@ -24,16 +24,9 @@ class TweetCell: UITableViewCell {
     
     @IBOutlet weak var tweetLabel: UILabel!
     
-    @IBOutlet weak var replyImageView: UIImageView!
-    @IBOutlet weak var retweetImageView: UIImageView!
-    @IBOutlet weak var favoriteImageView: UIImageView!
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-        profileImageView.layer.cornerRadius = 5.0
-        profileImageView.clipsToBounds = true
-    }
+    @IBOutlet weak var replyButton: UIButton!
+    @IBOutlet weak var retweetButton: UIButton!
+    @IBOutlet weak var favoriteButton: UIButton!
     
     var tweet: Tweet! {
         didSet {
@@ -66,6 +59,61 @@ class TweetCell: UITableViewCell {
             }
             
             tweetLabel.text = tweet.text
+            
+            if let retweeted = tweet.retweeted {
+                configureRetweetButton(retweeted: retweeted)
+            }
+            
+            if let favorited = tweet.favorited {
+                configureFavoriteButton(favorited: favorited)
+            }
         }
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        profileImageView.layer.cornerRadius = 5.0
+        profileImageView.clipsToBounds = true
+    }
+    
+    @IBAction func replyButtonTapped(_ sender: AnyObject) {
+        // TODO: Implement this
+    }
+    
+    @IBAction func retweetButtonTapped(_ sender: AnyObject) {
+        if let id = tweet.id {
+            TwitterClient.shared?.retweet(id: id,
+                                          success: { (_) in
+                                            DispatchQueue.main.async {
+                                                self.configureRetweetButton(retweeted: true)
+                                            }},
+                                          failure: { (error) in
+                                            print(error.localizedDescription)}
+            )
+        }
+    }
+    
+    @IBAction func favoriteButtonTapped(_ sender: AnyObject) {
+        if let id = tweet.id {
+            TwitterClient.shared?.favorite(id: id,
+                                          success: { (_) in
+                                            DispatchQueue.main.async {
+                                                self.configureFavoriteButton(favorited: true)
+                                            }},
+                                          failure: { (error) in
+                                            print(error.localizedDescription)}
+            )
+        }
+    }
+    
+    private func configureRetweetButton(retweeted: Bool) {
+        let image = UIImage(named: (retweeted ? "retweet-icon-green" : "retweet-icon"))
+        self.retweetButton.setImage(image, for: .normal)
+    }
+    
+    private func configureFavoriteButton(favorited: Bool) {
+        let image = UIImage(named: (favorited ? "favor-icon-red" : "favor-icon"))
+        self.favoriteButton.setImage(image, for: .normal)
     }
 }

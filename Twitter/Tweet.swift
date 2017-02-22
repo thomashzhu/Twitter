@@ -10,8 +10,6 @@ import UIKit
 
 class Tweet: NSObject {
     
-    let retweeted: Bool?
-    
     let profileImageURL: URL?
     
     let name: String?
@@ -23,9 +21,12 @@ class Tweet: NSObject {
     let retweetCount: Int
     let favoritesCount: Int
     
+    // Retweet & Favorite
+    let id: Int?
+    let retweeted: Bool?
+    let favorited: Bool?
+    
     init(dictionary: [String: AnyObject]) {
-        
-        self.retweeted = dictionary["retweeted"] as? Bool
         
         if let profileImageURLString = dictionary["user"]?["profile_image_url_https"] as? String,
             let profileImageURL = URL(string: profileImageURLString) {
@@ -52,6 +53,10 @@ class Tweet: NSObject {
         // pending
         self.retweetCount = (dictionary["retweet_count"] as? Int) ?? 0
         self.favoritesCount = (dictionary["favourites_count"] as? Int) ?? 0
+        
+        self.id = dictionary["id"] as? Int
+        self.retweeted = dictionary["retweeted"] as? Bool
+        self.favorited = dictionary["favorited"] as? Bool
     }
     
     class func tweetsWithArray(dictionaries: [[String: AnyObject]]) -> [Tweet] {

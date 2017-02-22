@@ -21,15 +21,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("There is a current user")
             
             if let twitterClient = TwitterClient.shared {
-                if !twitterClient.isAuthorized {
-                    twitterClient.loadAccessToken()
+                if twitterClient.loadAccessToken() {
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    let vc = storyboard.instantiateViewController(withIdentifier: "TweetsNavigationController")
+                    
+                    window?.rootViewController = vc
                 }
             }
-            
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let vc = storyboard.instantiateViewController(withIdentifier: "TweetsNavigationController")
-            
-            window?.rootViewController = vc
         }
         
         NotificationCenter.default.addObserver(
