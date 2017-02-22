@@ -18,16 +18,34 @@ class TwitterClient: BDBOAuth1SessionManager {
                                                                     consumerKey: "rJGhM2NZQdkIeawgHNxNNnaGL",
                                                                     consumerSecret: "FY6zm7jSgifroGt4Lm64M0PAzTwNPJQTgzxpJaeBI0irqT874X")
     
+    var minTweetId: Int?
+    
     var loginSuccess: (() -> Void)?
     var loginFailure: ((Error) -> Void)?
     
     func homeTimeline(success: @escaping ([Tweet]) -> Void, failure: @escaping (Error) -> Void) {
+        
+        var parameters = ["count": 20]
+        if let minTweetId = minTweetId {
+            parameters["max_id"] = minTweetId - 1
+        }
+        
         get("1.1/statuses/home_timeline.json",
-            parameters: ["count": 20],
+            parameters: parameters,
             progress: nil,
             success: { (_, response: Any?) in
                 if let dictionaries = response as? [[String: AnyObject]] {
                     let tweets = Tweet.tweetsWithArray(dictionaries: dictionaries)
+                    
+                    let tweetIDs = tweets.reduce([]) { (result, tweet) -> [Int] in
+                        if let id = tweet.id {
+                            return result + [id]
+                        } else {
+                            return result
+                        }
+                    }
+                    self.minTweetId = tweetIDs.sorted().first
+                    
                     success(tweets)
                 }
             },
@@ -132,8 +150,6 @@ class TwitterClient: BDBOAuth1SessionManager {
         requestSerializer.removeAccessToken()
         
         let keychain = Keychain(service: TwitterClient.bundleIdenfitier)
-        print(keychain["access_token"])
-        print(keychain["access_token_secret"])
         if let accessToken = keychain["access_token"],
             let accessTokenSecret = keychain["access_token_secret"] {
             

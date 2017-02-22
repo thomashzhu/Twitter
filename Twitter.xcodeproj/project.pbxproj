@@ -21,6 +21,7 @@
 		6574BD031E5D533000A096F3 /* KeychainAccess.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6574BD001E5D52F700A096F3 /* KeychainAccess.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		658724131E5CBE6F00A030B6 /* TweetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658724111E5CBE6F00A030B6 /* TweetCell.swift */; };
 		658724141E5CBE6F00A030B6 /* TweetCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 658724121E5CBE6F00A030B6 /* TweetCell.xib */; };
+		658724161E5D75AB00A030B6 /* InfiniteScrollActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658724151E5D75AB00A030B6 /* InfiniteScrollActivityView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -54,6 +55,7 @@
 		6574BD041E5D54EF00A096F3 /* Twitter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Twitter.entitlements; sourceTree = "<group>"; };
 		658724111E5CBE6F00A030B6 /* TweetCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TweetCell.swift; sourceTree = "<group>"; };
 		658724121E5CBE6F00A030B6 /* TweetCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetCell.xib; sourceTree = "<group>"; };
+		658724151E5D75AB00A030B6 /* InfiniteScrollActivityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfiniteScrollActivityView.swift; sourceTree = "<group>"; };
 		6934435FF65C766FAA953357 /* Pods_Twitter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Twitter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -145,6 +147,7 @@
 			children = (
 				658724111E5CBE6F00A030B6 /* TweetCell.swift */,
 				658724121E5CBE6F00A030B6 /* TweetCell.xib */,
+				658724151E5D75AB00A030B6 /* InfiniteScrollActivityView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -289,6 +292,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				658724161E5D75AB00A030B6 /* InfiniteScrollActivityView.swift in Sources */,
 				655DD7A61E5A766700635D30 /* User.swift in Sources */,
 				658724131E5CBE6F00A030B6 /* TweetCell.swift in Sources */,
 				655DD7A81E5A767200635D30 /* Tweet.swift in Sources */,
