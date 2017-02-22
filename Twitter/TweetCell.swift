@@ -82,8 +82,9 @@ class TweetCell: UITableViewCell {
     }
     
     @IBAction func retweetButtonTapped(_ sender: AnyObject) {
-        if let id = tweet.id, let retweeted = tweet.retweeted {
-            TwitterClient.shared?.retweet(id: id,
+        if let retweeted = tweet.retweeted {
+            TwitterClient.shared?.retweet(mode: (retweeted ? .Unretweet : .Retweet),
+                                          tweet: tweet,
                                           success: { (_) in
                                             self.tweet.retweeted = !retweeted
                                             DispatchQueue.main.async {
@@ -96,9 +97,9 @@ class TweetCell: UITableViewCell {
     }
     
     @IBAction func favoriteButtonTapped(_ sender: AnyObject) {
-        if let id = tweet.id, let favorited = tweet.favorited {
+        if let favorited = tweet.favorited {
             TwitterClient.shared?.favorite(mode: (favorited ? .Destroy : .Create),
-                                           id: id,
+                                           tweet: tweet,
                                            success: { (_) in
                                             self.tweet.favorited = !favorited
                                             DispatchQueue.main.async {

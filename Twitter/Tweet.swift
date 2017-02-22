@@ -26,6 +26,8 @@ class Tweet: NSObject {
     var retweeted: Bool?
     var favorited: Bool?
     
+    let dictionary: [String: AnyObject]
+    
     init(dictionary: [String: AnyObject]) {
         
         if let profileImageURLString = dictionary["user"]?["profile_image_url_https"] as? String,
@@ -57,6 +59,8 @@ class Tweet: NSObject {
         self.id = dictionary["id"] as? Int
         self.retweeted = dictionary["retweeted"] as? Bool
         self.favorited = dictionary["favorited"] as? Bool
+        
+        self.dictionary = dictionary
     }
     
     class func tweetsWithArray(dictionaries: [[String: AnyObject]]) -> [Tweet] {

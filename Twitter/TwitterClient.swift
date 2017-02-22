@@ -168,33 +168,71 @@ class TwitterClient: BDBOAuth1SessionManager {
         return false
     }
     
-    func retweet(id: Int, success: @escaping (Void) -> Void, failure: @escaping (Error) -> Void) {
-        post("1.1/statuses/retweet/\(id).json",
-            parameters: nil,
-            progress: nil,
-            success: { (_, response: Any?) in
-                if let _ = response as? [String: AnyObject] {
-                    success()
+    enum RetweetMode {
+        case Retweet, Unretweet
+    }
+    
+    func retweet(mode: RetweetMode, tweet: Tweet, success: @escaping (Void) -> Void, failure: @escaping (Error) -> Void) {
+        switch mode {
+        case .Retweet:
+            if let id = tweet.id {
+                post("1.1/statuses/retweet/\(id).json",
+                    parameters: nil,
+                    progress: nil,
+                    success: { _ in success() },
+                    failure: { (_, error: Error) in
+                        failure(error)
+                })
+            }
+        case .Unretweet:
+            let dictionary = tweet.dictionary
+            
+            let originalTweetId: String? = {
+                if let retweetStatus = dictionary["retweeted_status"] as? [String: AnyObject], !retweetStatus.isEmpty {
+                    return retweetStatus["id_str"] as? String
+                } else {
+                    return dictionary["id_str"] as? String
                 }
-            },
-            failure: { (_, error: Error) in
-                failure(error)
-        })
+            }()
+            
+            if let _ = originalTweetId {
+                if let id = tweet.id {
+                    get("https://api.twitter.com/1.1/statuses/show.json?id=\(id)",
+                        parameters: ["include_my_retweet": 1],
+                        progress: nil,
+                        success: { (_, response: Any?) in
+                            if let fullTweetDictionary = response as? [String: AnyObject] {
+                                if let retweetId = fullTweetDictionary["current_user_retweet"]?["id_str"] as? String {
+                                    self.post("1.1/statuses/destroy/\(retweetId).json",
+                                        parameters: nil,
+                                        progress: nil,
+                                        success: { _ in success() },
+                                        failure: { (_, error: Error) in
+                                            failure(error)
+                                    })
+                                }
+                            }},
+                        failure: { (_, error: Error) in
+                            failure(error)
+                    })
+                }
+            }
+        }
     }
     
     enum FavoriteMode {
         case Create, Destroy
     }
     
-    func favorite(mode: FavoriteMode, id: Int, success: @escaping (Void) -> Void, failure: @escaping (Error) -> Void) {
-        post("1.1/favorites/\(mode == .Create ? "create" : "destroy").json",
-            parameters: ["id": id],
-            progress: nil,
-            success: { (_, _) in
-                success()
-            },
-            failure: { (_, error: Error) in
-                failure(error)
-        })
+    func favorite(mode: FavoriteMode, tweet: Tweet, success: @escaping (Void) -> Void, failure: @escaping (Error) -> Void) {
+        if let id = tweet.id {
+            post("1.1/favorites/\(mode == .Create ? "create" : "destroy").json",
+                parameters: ["id": id],
+                progress: nil,
+                success: { _ in success() },
+                failure: { (_, error: Error) in
+                    failure(error)
+            })
+        }
     }
 }
