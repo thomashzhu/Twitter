@@ -18,16 +18,28 @@ class TwitterClient: BDBOAuth1SessionManager {
                                                                     consumerKey: "rJGhM2NZQdkIeawgHNxNNnaGL",
                                                                     consumerSecret: "FY6zm7jSgifroGt4Lm64M0PAzTwNPJQTgzxpJaeBI0irqT874X")
     
+    @objc enum LoadingMode: Int {
+        case RefreshTweets
+        case EarlierTweets
+    }
+    var maxTweetId: Int?
     var minTweetId: Int?
     
     var loginSuccess: (() -> Void)?
     var loginFailure: ((Error) -> Void)?
     
-    func homeTimeline(success: @escaping ([Tweet]) -> Void, failure: @escaping (Error) -> Void) {
+    func homeTimeline(mode: LoadingMode, success: @escaping ([Tweet]) -> Void, failure: @escaping (Error) -> Void) {
         
         var parameters = ["count": 20]
-        if let minTweetId = minTweetId {
-            parameters["max_id"] = minTweetId - 1
+        switch mode {
+        case .RefreshTweets:
+            if let maxTweetId = maxTweetId {
+                parameters["since_id"] = maxTweetId
+            }
+        case .EarlierTweets:
+            if let minTweetId = minTweetId {
+                parameters["max_id"] = minTweetId - 1
+            }
         }
         
         get("1.1/statuses/home_timeline.json",
@@ -44,6 +56,7 @@ class TwitterClient: BDBOAuth1SessionManager {
                             return result
                         }
                     }
+                    self.maxTweetId = tweetIDs.sorted().last
                     self.minTweetId = tweetIDs.sorted().first
                     
                     success(tweets)
@@ -61,13 +74,7 @@ class TwitterClient: BDBOAuth1SessionManager {
             success: { (_, response: Any?) in
                 if let userDictionary = response as? [String: AnyObject] {
                     let user = User(dictionary: userDictionary)
-                    
                     success(user)
-                    
-                    print("name: \(user.name)")
-                    print("screenname: \(user.screenName)")
-                    print("profile url: \(user.profileUrl)")
-                    print("description: \(user.tagline)")
                 }
             },
             failure: { (_, error: Error) in
@@ -162,7 +169,6 @@ class TwitterClient: BDBOAuth1SessionManager {
     }
     
     func retweet(id: Int, success: @escaping (Void) -> Void, failure: @escaping (Error) -> Void) {
-        print(id)
         post("1.1/statuses/retweet/\(id).json",
             parameters: nil,
             progress: nil,

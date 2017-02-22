@@ -12,6 +12,8 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     
     @IBOutlet weak var tableView: UITableView!
     
+    private let refreshControl = UIRefreshControl()
+    
     private(set) var tweets = [Tweet]()
     
     private(set) var isMoreDataLoading = false
@@ -27,6 +29,10 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         let nib = UINib(nibName: "TweetCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "TweetCell")
         
+        // Set up Pull-to-refresh view
+        refreshControl.addTarget(self, action: #selector(TweetsViewController.loadMoreTimelineTweets(mode:)), for: .valueChanged)
+        tableView.insertSubview(refreshControl, at: 0)
+        
         // Set up Infinite Scroll loading indicator
         let frame = CGRect(x: 0, y: tableView.contentSize.height, width: tableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
         loadingMoreView = InfiniteScrollActivityView(frame: frame)
@@ -37,19 +43,27 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         insets.bottom += InfiniteScrollActivityView.defaultHeight
         tableView.contentInset = insets
         
-        loadTimelineTweets()
+        loadMoreTimelineTweets(mode: .EarlierTweets)
     }
     
-    func loadTimelineTweets() {
+    func loadMoreTimelineTweets(mode: TwitterClient.LoadingMode) {
         TwitterClient.shared?.homeTimeline(
+            mode: mode,
             success: { (tweets) in
                 self.isMoreDataLoading = false
                 self.loadingMoreView!.stopAnimating()
 
-                self.tweets.append(contentsOf: tweets)
-                self.tableView.reloadData()
-        }, failure: { (error) in
-            print(error.localizedDescription)}
+                switch mode {
+                case .RefreshTweets:
+                    self.tweets.insert(contentsOf: tweets, at: 0)
+                    self.refreshControl.endRefreshing()
+                case .EarlierTweets:
+                    self.tweets.append(contentsOf: tweets)
+                }
+                
+                self.tableView.reloadData()},
+            failure: { (error) in
+                print(error.localizedDescription)}
         )
     }
     
@@ -65,7 +79,7 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
                 loadingMoreView?.frame = frame
                 loadingMoreView!.startAnimating()
                 
-                loadTimelineTweets()
+                loadMoreTimelineTweets(mode: .EarlierTweets)
             }
         }
     }
