@@ -24,7 +24,7 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.estimatedRowHeight = 120
+        tableView.estimatedRowHeight = 150
         
         let nib = UINib(nibName: "TweetCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "TweetCell")

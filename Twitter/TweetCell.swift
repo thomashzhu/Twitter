@@ -13,7 +13,7 @@ class TweetCell: UITableViewCell {
 
     // MARK: - IBOutlets
     
-    @IBOutlet weak var retweetedIndicatorImageView: UIImageView!
+    @IBOutlet weak var retweetStatusView: UIStackView!
     @IBOutlet weak var retweetedByLabel: UILabel!
     
     @IBOutlet weak var profileImageView: UIImageView!
@@ -39,30 +39,17 @@ class TweetCell: UITableViewCell {
             screenNameLabel.text = tweet.screenName
             
             if let timestamp = tweet.timestamp {
-                let interval = timestamp.timeIntervalSinceNow
-                print(timestamp)
-                if interval < 60 * 60 * 24 {
-                    let seconds = -Int(interval.truncatingRemainder(dividingBy: 60))
-                    let minutes = -Int((interval / 60).truncatingRemainder(dividingBy: 60))
-                    let hours = -Int((interval / 3600))
-                    
-                    let result = (hours == 0 ? "" : "\(hours)h ") + (minutes == 0 ? "" : "\(minutes)m ") + (seconds == 0 ? "" : "\(seconds)s")
-                    timestampLabel.text = result
-                } else {
-                    let formatter: DateFormatter = {
-                        let f = DateFormatter()
-                        f.dateFormat = "EEE/MMM/d"
-                        return f
-                    }()
-                    timestampLabel.text = formatter.string(from: timestamp)
-                }
+                timestampLabel.text = TwitterClient.tweetTimeFormatted(timestamp: timestamp)
             }
             
             tweetLabel.text = tweet.text
+            tweetLabel.sizeToFit()
             
             if let retweeted = tweet.retweeted {
                 configureRetweetButton(retweeted: retweeted)
             }
+            
+            setupRetweetStatView()
             
             if let favorited = tweet.favorited {
                 configureFavoriteButton(favorited: favorited)
@@ -87,7 +74,9 @@ class TweetCell: UITableViewCell {
                                           tweet: tweet,
                                           success: { (_) in
                                             self.tweet.retweeted = !retweeted
+                                            self.tweet.retweetCount += (retweeted ? -1 : 1)
                                             DispatchQueue.main.async {
+                                                self.setupRetweetStatView()
                                                 self.configureRetweetButton(retweeted: !retweeted)
                                             }},
                                           failure: { (error) in
@@ -102,6 +91,7 @@ class TweetCell: UITableViewCell {
                                            tweet: tweet,
                                            success: { (_) in
                                             self.tweet.favorited = !favorited
+                                            self.tweet.favoritesCount += (favorited ? -1 : 1)
                                             DispatchQueue.main.async {
                                                 self.configureFavoriteButton(favorited: !favorited)
                                             }},
@@ -111,6 +101,52 @@ class TweetCell: UITableViewCell {
         }
     }
     
+    private func setupRetweetStatView() {
+        if tweet.retweetCount > 0 {
+            if let screenName = tweet.retweetUserScreenName {
+                configureRetweetStatUI(screenName: screenName)
+            } else if !tweet.retweetInfoUnretrievable {
+                if let id = tweet.id {
+                    TwitterClient.shared?.retweetedUserScreenName(id: id,
+                                                                  success: { (screenName) in
+                                                                    DispatchQueue.main.async {
+                                                                        self.configureRetweetStatUI(screenName: screenName)
+                                                                    }},
+                                                                  failure: { (error) in
+                                                                    self.configureRetweetStatUI(screenName: nil)
+                                                                    print(error.localizedDescription)}
+                    )
+                }
+            } else {
+                configureRetweetStatUI(screenName: nil)
+            }
+        } else {
+            configureRetweetStatUI(screenName: nil)
+        }
+    }
+    
+    private func configureRetweetStatUI(screenName: String?) {
+        if let screenName = screenName {
+            
+            if retweetStatusView.isHidden {
+                retweetStatusView.isHidden = false
+                layoutIfNeeded()
+            }
+            
+            switch tweet.retweetCount {
+            case 1:
+                retweetedByLabel.text = "\(screenName) retweeted"
+            case 2:
+                retweetedByLabel.text = "\(screenName) and 1 other retweeted"
+            default:
+                retweetedByLabel.text = "\(screenName) and \(tweet.retweetCount - 1) others retweeted"
+            }
+        } else {
+            retweetStatusView.isHidden = true
+            layoutIfNeeded()
+        }
+    }
+        
     private func configureRetweetButton(retweeted: Bool) {
         let image = UIImage(named: (retweeted ? "retweet-icon-green" : "retweet-icon"))
         self.retweetButton.setImage(image, for: .normal)

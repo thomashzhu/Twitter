@@ -235,4 +235,41 @@ class TwitterClient: BDBOAuth1SessionManager {
             })
         }
     }
+    
+    func retweetedUserScreenName(id: Int, success: @escaping (String) -> Void, failure: @escaping (Error) -> Void) {
+        get("1.1/statuses/retweets/\(id).json",
+            parameters: ["count": 1],
+            progress: nil,
+            success: { (_, response: Any?) in
+                if let response = response as? [[String: AnyObject]] {
+                    if let screenName = response.first?["user"]?["screen_name"] as? String {
+                        success(screenName)
+                    }
+                }
+        },
+            failure: { (_, error: Error) in
+                failure(error)
+        })
+    }
+    
+    static func tweetTimeFormatted(timestamp: Date) -> String {
+        
+        let interval = timestamp.timeIntervalSinceNow
+        
+        if interval < 60 * 60 * 24 {
+            let seconds = -Int(interval.truncatingRemainder(dividingBy: 60))
+            let minutes = -Int((interval / 60).truncatingRemainder(dividingBy: 60))
+            let hours = -Int((interval / 3600))
+            
+            let result = (hours == 0 ? "" : "\(hours)h ") + (minutes == 0 ? "" : "\(minutes)m ") + (seconds == 0 ? "" : "\(seconds)s")
+            return result
+        } else {
+            let formatter: DateFormatter = {
+                let f = DateFormatter()
+                f.dateFormat = "EEE/MMM/d"
+                return f
+            }()
+            return formatter.string(from: timestamp)
+        }
+    }
 }

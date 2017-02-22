@@ -18,13 +18,16 @@ class Tweet: NSObject {
     
     let text: String?
     
-    let retweetCount: Int
-    let favoritesCount: Int
+    var retweetCount: Int
+    var favoritesCount: Int
     
     // Retweet & Favorite
     let id: Int?
     var retweeted: Bool?
     var favorited: Bool?
+    
+    var retweetUserScreenName: String?
+    var retweetInfoUnretrievable: Bool
     
     let dictionary: [String: AnyObject]
     
@@ -52,7 +55,6 @@ class Tweet: NSObject {
         
         self.text = dictionary["text"] as? String
         
-        // pending
         self.retweetCount = (dictionary["retweet_count"] as? Int) ?? 0
         self.favoritesCount = (dictionary["favourites_count"] as? Int) ?? 0
         
@@ -61,6 +63,8 @@ class Tweet: NSObject {
         self.favorited = dictionary["favorited"] as? Bool
         
         self.dictionary = dictionary
+        
+        retweetInfoUnretrievable = false
     }
     
     class func tweetsWithArray(dictionaries: [[String: AnyObject]]) -> [Tweet] {
