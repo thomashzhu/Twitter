@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import pop
 
-class TweetsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate {
+class TweetsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, UIViewControllerTransitioningDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -102,6 +103,10 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         TwitterClient.shared?.logout()
     }
     
+    @IBAction func newMessagePressed(_ sender: AnyObject) {
+        performSegue(withIdentifier: "vc", sender: nil)
+    }
+    
     private func configureUI(cell: TweetCell, indexPath: IndexPath) {
         
         let tweet = tweets[indexPath.row]
@@ -121,7 +126,6 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         }
         
         cell.tweetLabel.text = tweet.text
-        cell.tweetLabel.sizeToFit()
         
         cell.cellHeightAdjustmentClosure = {
             self.tableView.reloadRows(at: [indexPath], with: .none)
@@ -131,5 +135,22 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         if let favorited = tweet.favorited {
             cell.configureFavoriteButton(favorited: favorited)
         }
+    }
+    
+    // MARK: - Facebook Pop
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let messageVC = segue.destination as? MessageViewController {
+            messageVC.transitioningDelegate = self
+            messageVC.modalPresentationStyle = .custom
+        }
+    }
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return PresentingAnimationController()
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return DismissingAnimationController()
     }
 }
