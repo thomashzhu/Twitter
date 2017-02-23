@@ -46,11 +46,13 @@ class MessageViewController: UIViewController, UITextViewDelegate {
                 inReplyToScreenName = screenName
                 
                 doneButton.setTitle("REPLY", for: .normal)
-                messageTextView.text = "In reply to \(screenName)"
+                messageTextView.text = "In reply to \(screenName)..."
             }
         }
         
         messageTextView.alpha = 0.75
+        
+        characterCountLabel.text = ""
     }
 
     @IBAction func closeButtonTapped(_ sender: AnyObject) {

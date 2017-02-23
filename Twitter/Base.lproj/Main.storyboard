@@ -110,7 +110,7 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KjT-p7-d5i">
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dmz-Qi-e8Q">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dmz-Qi-e8Q" userLabel="COMPOSE/REPLY">
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="GhS-hO-6bB"/>
                                         </constraints>
@@ -141,24 +141,33 @@
                                         <fontDescription key="fontDescription" name="Avenir-Roman" family="Avenir" pointSize="13"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dVr-ne-foU">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__COUNT__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dVr-ne-foU">
                                         <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="11"/>
                                         <color key="textColor" red="0.57419515896569662" green="0.57419515896569662" blue="0.57419515896569662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4ca-M2-dIZ" userLabel="Border">
+                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="1" id="j2x-EK-h0A"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstItem="OKP-GW-ohv" firstAttribute="top" secondItem="4ca-M2-dIZ" secondAttribute="bottom" constant="12" id="1Ze-j4-pb6"/>
                                     <constraint firstItem="dVr-ne-foU" firstAttribute="trailing" secondItem="OKP-GW-ohv" secondAttribute="trailing" constant="-8" id="5M6-Mv-1nd"/>
+                                    <constraint firstItem="4ca-M2-dIZ" firstAttribute="leading" secondItem="KjT-p7-d5i" secondAttribute="leadingMargin" constant="12" id="DAl-7L-chg"/>
                                     <constraint firstItem="OKP-GW-ohv" firstAttribute="leading" secondItem="KjT-p7-d5i" secondAttribute="leadingMargin" constant="8" id="LXL-zI-cgU"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="Dmz-Qi-e8Q" secondAttribute="trailing" constant="8" id="Pgs-m1-xtH"/>
                                     <constraint firstItem="Dmz-Qi-e8Q" firstAttribute="top" secondItem="KjT-p7-d5i" secondAttribute="topMargin" constant="8" id="R7R-IR-YRv"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="4ca-M2-dIZ" secondAttribute="trailing" constant="12" id="a53-cd-HTl"/>
                                     <constraint firstItem="OKP-GW-ohv" firstAttribute="bottom" secondItem="KjT-p7-d5i" secondAttribute="bottomMargin" id="ecC-bZ-6zV"/>
                                     <constraint firstItem="2Eo-EB-gjt" firstAttribute="top" secondItem="KjT-p7-d5i" secondAttribute="topMargin" constant="8" id="jpS-zt-V03"/>
                                     <constraint firstItem="2Eo-EB-gjt" firstAttribute="leading" secondItem="KjT-p7-d5i" secondAttribute="leadingMargin" constant="8" id="lBE-Nu-p1p"/>
                                     <constraint firstItem="dVr-ne-foU" firstAttribute="bottom" secondItem="OKP-GW-ohv" secondAttribute="bottom" constant="-8" id="oHz-ho-rdp"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="OKP-GW-ohv" secondAttribute="trailing" constant="8" id="pBA-7j-saG"/>
-                                    <constraint firstItem="OKP-GW-ohv" firstAttribute="top" secondItem="2Eo-EB-gjt" secondAttribute="bottom" constant="8" id="trw-dT-afO"/>
+                                    <constraint firstItem="4ca-M2-dIZ" firstAttribute="top" secondItem="2Eo-EB-gjt" secondAttribute="bottom" constant="8" id="rMN-bh-TJA"/>
                                 </constraints>
                             </view>
                         </subviews>

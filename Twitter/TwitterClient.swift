@@ -46,20 +46,22 @@ class TwitterClient: BDBOAuth1SessionManager {
             parameters: parameters,
             progress: nil,
             success: { (_, response: Any?) in
-                if var dictionaries = response as? [[String: AnyObject]] {
-                    // Exclude retweets from the current user when refreshing tweets
-                    if mode == .RefreshTweets {
-                        dictionaries = dictionaries.filter { (dictionary) -> Bool in
-                            if let screenName = dictionary["user"]?["screen_name"] as? String,
-                                let currentUserScreenName = User.currentUser?.screenName,
-                                screenName == currentUserScreenName {
-                                if let retweeted = dictionary["retweeted"] as? Bool, retweeted == true {
-                                    return false
+                if let dictionaries = response as? [[String: AnyObject]] {
+                    /*
+                        // Exclude retweets from the current user when refreshing tweets
+                        if mode == .RefreshTweets {
+                            dictionaries = dictionaries.filter { (dictionary) -> Bool in
+                                if let screenName = dictionary["user"]?["screen_name"] as? String,
+                                    let currentUserScreenName = User.currentUser?.screenName,
+                                    screenName == currentUserScreenName {
+                                    if let retweeted = dictionary["retweeted"] as? Bool, retweeted == true {
+                                        return false
+                                    }
                                 }
+                                return true
                             }
-                            return true
                         }
-                    }
+                    */
                     
                     let tweets = Tweet.tweetsWithArray(dictionaries: dictionaries)
                     
