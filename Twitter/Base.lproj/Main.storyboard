@@ -83,12 +83,13 @@
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <action selector="newMessagePressed:" destination="f55-aP-ULS" id="EMb-7I-XRH"/>
+                                <segue destination="XsM-F3-eNj" kind="presentation" identifier="MessageViewController_NEW" id="RSr-nP-6nk"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="xyt-3e-Chn" id="zP8-bM-f69"/>
-                        <segue destination="XsM-F3-eNj" kind="presentation" identifier="vc" id="sQq-Yd-oMb"/>
+                        <segue destination="XsM-F3-eNj" kind="presentation" identifier="MessageViewController_REPLY" id="368-Wt-r06"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hsg-q8-vYY" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -114,7 +115,7 @@
                                             <constraint firstAttribute="height" constant="36" id="GhS-hO-6bB"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="13"/>
-                                        <state key="normal" title="DONE">
+                                        <state key="normal" title="__DONE__">
                                             <color key="titleColor" red="0.24996414780000001" green="0.62302505969999999" blue="0.96619254349999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <connections>
@@ -173,6 +174,7 @@
                     <connections>
                         <outlet property="backgroundView" destination="KjT-p7-d5i" id="Lqc-jg-ntG"/>
                         <outlet property="characterCountLabel" destination="dVr-ne-foU" id="yhO-Rq-yGj"/>
+                        <outlet property="doneButton" destination="Dmz-Qi-e8Q" id="PcW-CV-zgq"/>
                         <outlet property="messageTextView" destination="OKP-GW-ohv" id="QPi-Re-4du"/>
                     </connections>
                 </viewController>
@@ -200,4 +202,7 @@
             <point key="canvasLocation" x="684" y="138.98050974512745"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="368-Wt-r06"/>
+    </inferredMetricsTieBreakers>
 </document>

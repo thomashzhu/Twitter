@@ -117,6 +117,30 @@ class TwitterClient: BDBOAuth1SessionManager {
         })
     }
     
+    enum UpdateMode {
+        case New
+        case Reply(String, String)
+    }
+    
+    func updateStatus(message: String, inReplyToStatusId: String?, success: @escaping (Void) -> (Void), failure: @escaping (Error) -> Void) {
+        
+        let parameters: [String: String] = {
+            if let inReplyToStatusId = inReplyToStatusId {
+                return ["status": message, "in_reply_to_status_id": "\(inReplyToStatusId)"]
+            } else {
+                return ["status": message]
+            }
+        }()
+        
+        post("1.1/statuses/update.json",
+            parameters: parameters,
+            progress: nil,
+            success: { _ in success() },
+            failure: { (_, error: Error) in
+                failure(error)
+        })
+    }
+    
     func login(success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         
         loginSuccess = success

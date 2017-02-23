@@ -46,7 +46,8 @@ class TweetCell: UITableViewCell {
     // MARK: - IBActions
     
     @IBAction func replyButtonTapped(_ sender: AnyObject) {
-        // TODO: Implement this
+        let notification = Notification.Name(rawValue: "replyButtonPressed")
+        NotificationCenter.default.post(name: notification, object: nil, userInfo: ["tweet": tweet])
     }
     
     @IBAction func retweetButtonTapped(_ sender: AnyObject) {

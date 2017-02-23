@@ -23,6 +23,12 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let notification = Notification.Name(rawValue: "replyButtonPressed")
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.replyButtonPressed),
+                                               name: notification,
+                                               object: nil)
+        
         tableView.dataSource = self
         tableView.delegate = self
         tableView.estimatedRowHeight = 150
@@ -31,7 +37,7 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         tableView.register(nib, forCellReuseIdentifier: "TweetCell")
         
         // Set up Pull-to-refresh view
-        refreshControl.addTarget(self, action: #selector(TweetsViewController.loadMoreTimelineTweets(mode:)), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(self.loadMoreTimelineTweets(mode:)), for: .valueChanged)
         tableView.insertSubview(refreshControl, at: 0)
         
         // Set up Infinite Scroll loading indicator
@@ -103,8 +109,36 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         TwitterClient.shared?.logout()
     }
     
+    func replyButtonPressed(notification: Notification) {
+        if let tweet = notification.userInfo?["tweet"] as? Tweet {
+            performSegue(withIdentifier: "MessageViewController_REPLY", sender: tweet)
+        }
+    }
+    
     @IBAction func newMessagePressed(_ sender: AnyObject) {
-        performSegue(withIdentifier: "vc", sender: nil)
+        performSegue(withIdentifier: "MessageViewController_NEW", sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let identifier = segue.identifier {
+            if identifier == "MessageViewController_NEW" {
+                if let newMessageVC = segue.destination as? MessageViewController {
+                    newMessageVC.transitioningDelegate = self
+                    newMessageVC.modalPresentationStyle = .custom
+                    newMessageVC.updateMode = .New
+                }
+            } else if identifier == "MessageViewController_REPLY" {
+                if let replyMessageVC = segue.destination as? MessageViewController {
+                    replyMessageVC.transitioningDelegate = self
+                    replyMessageVC.modalPresentationStyle = .custom
+                    if let tweet = sender as? Tweet {
+                        if let id = tweet.id, let screenName = tweet.screenName {
+                            replyMessageVC.updateMode = .Reply(id, screenName)
+                        }
+                    }
+                }
+            }
+        }
     }
     
     private func configureUI(cell: TweetCell, indexPath: IndexPath) {
@@ -138,13 +172,6 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     // MARK: - Facebook Pop
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let messageVC = segue.destination as? MessageViewController {
-            messageVC.transitioningDelegate = self
-            messageVC.modalPresentationStyle = .custom
-        }
-    }
     
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return PresentingAnimationController()

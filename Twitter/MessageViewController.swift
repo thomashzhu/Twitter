@@ -15,7 +15,18 @@ class MessageViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var messageTextView: UITextView!
     @IBOutlet weak var characterCountLabel: UILabel!
     
-    private let textViewPlaceholder = "Message..."
+    @IBOutlet weak var doneButton: UIButton!
+    
+    var updateMode: TwitterClient.UpdateMode?
+    
+    private(set) var inReplyToScreenName: String?
+    
+    private var inReplyToUserMention: String {
+        if let inReplyToScreenName = inReplyToScreenName {
+            return "@\(inReplyToScreenName) "
+        }
+        return ""
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +37,19 @@ class MessageViewController: UIViewController, UITextViewDelegate {
         messageTextView.delegate = self;
         
         // Substitute to the placeholder function in UITextField
-        messageTextView.text = textViewPlaceholder
+        if let updateMode = updateMode {
+            switch updateMode {
+            case .New:
+                doneButton.setTitle("COMPOSE", for: .normal)
+                messageTextView.text = "New tweet..."
+            case .Reply(_, let screenName):
+                inReplyToScreenName = screenName
+                
+                doneButton.setTitle("REPLY", for: .normal)
+                messageTextView.text = "In reply to \(screenName)"
+            }
+        }
+        
         messageTextView.alpha = 0.75
     }
 
@@ -35,6 +58,27 @@ class MessageViewController: UIViewController, UITextViewDelegate {
     }
     
     @IBAction func doneButtonTapped(_ sender: AnyObject) {
+        if let updateMode = updateMode {
+            let inReplyToStatusId: String? = {
+                switch updateMode {
+                case .New:
+                    return nil
+                case .Reply(let inReplyToStatusId, _):
+                    return inReplyToStatusId
+                }
+            }()
+            
+            TwitterClient.shared?.updateStatus(message: inReplyToUserMention + messageTextView.text,
+                                 inReplyToStatusId: inReplyToStatusId,
+                                 success: { _ in self.dismiss(animated: true, completion: nil) },
+                                 failure: { (error) in
+                                    let ac = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                                    ac.addAction(okAction)
+                                    self.present(ac, animated: true, completion: nil)
+                }
+            )
+        }
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -44,10 +88,20 @@ class MessageViewController: UIViewController, UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        characterCountLabel.text = "\(textView.text.characters.count)"
+        let count = textView.text.characters.count
+        
+        if let updateMode = updateMode {
+            switch updateMode {
+            case .New:
+                characterCountLabel.text = "\(count) out of 140 characters"
+            case .Reply:
+                let remainingCharacterCount = 140 - inReplyToUserMention.characters.count
+                characterCountLabel.text = "\(count) out of \(remainingCharacterCount) characters (prefixing \(inReplyToUserMention))"
+            }
+        }
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        return !(textView.text.characters.count >= 140)
+        return !(textView.text.characters.count >= 140 - inReplyToUserMention.characters.count)
     }
 }
