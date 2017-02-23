@@ -87,8 +87,7 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         if let cell = tableView.dequeueReusableCell(withIdentifier: "TweetCell", for: indexPath) as? TweetCell {
-            let tweet = tweets[indexPath.row]
-            cell.tweet = tweet
+            configureUI(cell: cell, indexPath: indexPath)
             return cell
         }
         
@@ -101,5 +100,36 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     
     @IBAction func onLogoutButton(_ sender: AnyObject) {
         TwitterClient.shared?.logout()
+    }
+    
+    private func configureUI(cell: TweetCell, indexPath: IndexPath) {
+        
+        let tweet = tweets[indexPath.row]
+        
+        cell.tweet = tweet
+        
+        if let url = tweet.profileImageURL {
+            cell.profileImageView.setImageWith(url)
+        }
+        
+        cell.usernameLabel.text = tweet.name
+        
+        cell.screenNameLabel.text = tweet.screenName
+        
+        if let timestamp = tweet.timestamp {
+            cell.timestampLabel.text = TwitterClient.tweetTimeFormatted(timestamp: timestamp)
+        }
+        
+        cell.tweetLabel.text = tweet.text
+        cell.tweetLabel.sizeToFit()
+        
+        cell.cellHeightAdjustmentClosure = {
+            self.tableView.reloadRows(at: [indexPath], with: .none)
+        }
+        cell.determineRetweetStatusAndUpdateUI()
+        
+        if let favorited = tweet.favorited {
+            cell.configureFavoriteButton(favorited: favorited)
+        }
     }
 }

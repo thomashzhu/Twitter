@@ -10,6 +10,8 @@ import UIKit
 
 class Tweet: NSObject {
     
+    let dictionary: [String: AnyObject]
+    
     let profileImageURL: URL?
     
     let name: String?
@@ -18,20 +20,24 @@ class Tweet: NSObject {
     
     let text: String?
     
+    // Retweet & Favorite
+    let id: String?
+    
     var retweetCount: Int
     var favoritesCount: Int
     
-    // Retweet & Favorite
-    let id: Int?
     var retweeted: Bool?
     var favorited: Bool?
     
     var retweetUserScreenName: String?
     var retweetInfoUnretrievable: Bool
     
-    let dictionary: [String: AnyObject]
+    var tweetDetail: [String: AnyObject]?
+    var retweetId: String?
     
     init(dictionary: [String: AnyObject]) {
+        
+        self.dictionary = dictionary
         
         if let profileImageURLString = dictionary["user"]?["profile_image_url_https"] as? String,
             let profileImageURL = URL(string: profileImageURLString) {
@@ -55,14 +61,18 @@ class Tweet: NSObject {
         
         self.text = dictionary["text"] as? String
         
+        self.id = {
+            if let retweetStatus = dictionary["retweeted_status"] as? [String: AnyObject], !retweetStatus.isEmpty {
+                return retweetStatus["id_str"] as? String
+            } else {
+                return dictionary["id_str"] as? String
+            }
+        }()
+        
         self.retweetCount = (dictionary["retweet_count"] as? Int) ?? 0
         self.favoritesCount = (dictionary["favourites_count"] as? Int) ?? 0
         
-        self.id = dictionary["id"] as? Int
-        self.retweeted = dictionary["retweeted"] as? Bool
         self.favorited = dictionary["favorited"] as? Bool
-        
-        self.dictionary = dictionary
         
         retweetInfoUnretrievable = false
     }

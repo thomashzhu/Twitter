@@ -25,37 +25,16 @@ class TweetCell: UITableViewCell {
     @IBOutlet weak var tweetLabel: UILabel!
     
     @IBOutlet weak var replyButton: UIButton!
-    @IBOutlet weak var retweetButton: UIButton!
-    @IBOutlet weak var favoriteButton: UIButton!
     
-    var tweet: Tweet! {
-        didSet {
-            if let url = tweet.profileImageURL {
-                profileImageView.setImageWith(url)
-            }
-            
-            usernameLabel.text = tweet.name
-            
-            screenNameLabel.text = tweet.screenName
-            
-            if let timestamp = tweet.timestamp {
-                timestampLabel.text = TwitterClient.tweetTimeFormatted(timestamp: timestamp)
-            }
-            
-            tweetLabel.text = tweet.text
-            tweetLabel.sizeToFit()
-            
-            if let retweeted = tweet.retweeted {
-                configureRetweetButton(retweeted: retweeted)
-            }
-            
-            setupRetweetStatView()
-            
-            if let favorited = tweet.favorited {
-                configureFavoriteButton(favorited: favorited)
-            }
-        }
-    }
+    @IBOutlet weak var retweetButton: UIButton!
+    @IBOutlet weak var retweetCountLabel: UILabel!
+    
+    @IBOutlet weak var favoriteButton: UIButton!
+    @IBOutlet weak var favoriteCountLabel: UILabel!
+    
+    var tweet: Tweet!
+    
+    var cellHeightAdjustmentClosure: ((Void) -> Void)?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -63,6 +42,8 @@ class TweetCell: UITableViewCell {
         profileImageView.layer.cornerRadius = 5.0
         profileImageView.clipsToBounds = true
     }
+    
+    // MARK: - IBActions
     
     @IBAction func replyButtonTapped(_ sender: AnyObject) {
         // TODO: Implement this
@@ -76,7 +57,7 @@ class TweetCell: UITableViewCell {
                                             self.tweet.retweeted = !retweeted
                                             self.tweet.retweetCount += (retweeted ? -1 : 1)
                                             DispatchQueue.main.async {
-                                                self.setupRetweetStatView()
+                                                self.setupRetweetStatView(completion: self.cellHeightAdjustmentClosure)
                                                 self.configureRetweetButton(retweeted: !retweeted)
                                             }},
                                           failure: { (error) in
@@ -101,36 +82,84 @@ class TweetCell: UITableViewCell {
         }
     }
     
-    private func setupRetweetStatView() {
+    // MARK: - Determine if a retweet is retweeted by the current user
+    
+    /*
+     * The purpose is to determine if the current user is included among the users that 
+     * have retweeted the tweet. If there is no retweet at all, then no check is needed.
+     * However, if there is at least one, then we have to call the show status id API,
+     * and see if there is a current_user_retweet key in the response.
+     */
+    func determineRetweetStatusAndUpdateUI() {
         if tweet.retweetCount > 0 {
-            if let screenName = tweet.retweetUserScreenName {
-                configureRetweetStatUI(screenName: screenName)
-            } else if !tweet.retweetInfoUnretrievable {
-                if let id = tweet.id {
-                    TwitterClient.shared?.retweetedUserScreenName(id: id,
-                                                                  success: { (screenName) in
-                                                                    DispatchQueue.main.async {
-                                                                        self.configureRetweetStatUI(screenName: screenName)
-                                                                    }},
-                                                                  failure: { (error) in
-                                                                    self.configureRetweetStatUI(screenName: nil)
-                                                                    print(error.localizedDescription)}
-                    )
-                }
-            } else {
-                configureRetweetStatUI(screenName: nil)
-            }
+            getIsRetweetedByCurrentUser(completion: cellHeightAdjustmentClosure)
         } else {
-            configureRetweetStatUI(screenName: nil)
+            tweet.retweeted = false
+            retweetStatusView.isHidden = true
+            configureRetweetButton(retweeted: false)
         }
     }
     
-    private func configureRetweetStatUI(screenName: String?) {
+    // Step 1: Determine if this retweeted tweet is retweeted by the current user
+    private func getIsRetweetedByCurrentUser(completion: ((Void) -> Void)?) {
+        TwitterClient.shared?.getTweetDetail(tweet: tweet,
+                                             success: { (tweet) in
+                                                DispatchQueue.main.async {
+                                                    if let _ = self.tweet.tweetDetail?["current_user_retweet"] {
+                                                        self.tweet.retweeted = true
+                                                        self.configureRetweetButton(retweeted: true)
+                                                    } else {
+                                                        self.tweet.retweeted = false
+                                                        self.configureRetweetButton(retweeted: false)
+                                                    }
+                                                    self.setupRetweetStatView(completion: completion)
+                                                }},
+                                             failure: { (error) in
+                                                print(error.localizedDescription)}
+        )
+    }
+    
+    // Step 2: If so, get one of the user's screen name that retweeted the tweet
+    private func setupRetweetStatView(completion: ((Void) -> Void)?) {
+        
+        var retrievingScreenName = false
+        
+        if tweet.retweetCount > 0 {
+            if let screenName = tweet.retweetUserScreenName {
+                self.tweet.retweetUserScreenName = screenName
+            } else if !tweet.retweetInfoUnretrievable {
+                if let id = tweet.id {
+                    retrievingScreenName = true
+                    TwitterClient.shared?.retweetedUserScreenName(id: id,
+                                                                  success: { (screenName) in
+                                                                    self.tweet.retweetUserScreenName = screenName
+                                                                    DispatchQueue.main.async {
+                                                                        self.configureRetweetStatUI(
+                                                                            screenName: screenName,
+                                                                            completion: completion
+                                                                        )
+                                                                    }},
+                                                                  failure: { (error) in
+                                                                    print(error.localizedDescription)}
+                    )
+                }
+            }
+        }
+        
+        if !retrievingScreenName {
+            configureRetweetStatUI(screenName: tweet.retweetUserScreenName, completion: completion)
+        }
+    }
+    
+    // Step 3: Configure retweet stat UI view
+    private func configureRetweetStatUI(screenName: String?, completion: ((Void) -> Void)?) {
         if let screenName = screenName {
             
             if retweetStatusView.isHidden {
                 retweetStatusView.isHidden = false
-                layoutIfNeeded()
+                if let completion = completion {
+                    completion()
+                }
             }
             
             switch tweet.retweetCount {
@@ -146,14 +175,18 @@ class TweetCell: UITableViewCell {
             layoutIfNeeded()
         }
     }
-        
-    private func configureRetweetButton(retweeted: Bool) {
+    
+    // - MARK: Configure the Retweet Button
+    func configureRetweetButton(retweeted: Bool) {
         let image = UIImage(named: (retweeted ? "retweet-icon-green" : "retweet-icon"))
-        self.retweetButton.setImage(image, for: .normal)
+        retweetButton.setImage(image, for: .normal)
+        retweetCountLabel.text = "\(tweet.retweetCount)"
     }
     
-    private func configureFavoriteButton(favorited: Bool) {
+    // - MARK: Configure the Favorite Button
+    func configureFavoriteButton(favorited: Bool) {
         let image = UIImage(named: (favorited ? "favor-icon-red" : "favor-icon"))
-        self.favoriteButton.setImage(image, for: .normal)
+        favoriteButton.setImage(image, for: .normal)
+        favoriteCountLabel.text = "\(tweet.favoritesCount)"
     }
 }

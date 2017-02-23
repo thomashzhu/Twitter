@@ -21,13 +21,13 @@ class User: NSObject {
     
     init(dictionary: [String: AnyObject]) {
         name = dictionary["name"] as? String
-        screenName = dictionary["name"] as? String
-        if let profileUrlString = dictionary["name"] as? String {
+        screenName = dictionary["screen_name"] as? String
+        if let profileUrlString = dictionary["profile_image_url_https"] as? String {
             profileUrl = URL(string: profileUrlString)
         } else {
             profileUrl = nil
         }
-        tagline = dictionary["name"] as? String
+        tagline = dictionary["description"] as? String
         
         self.dictionary = dictionary
     }
