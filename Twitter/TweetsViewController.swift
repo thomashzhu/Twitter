@@ -179,6 +179,16 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         
         cell.tweet = tweet
         
+        // If the network is slow, it might take a while to load a retweeted user's name, so UI changes might
+        // be delayed. For the following if block, it decides whether to show or hide the retweet status view 
+        // right away, WITHOUT waiting for a retweet user's name to be returned.
+        if tweet.retweetCount > 0 {
+            cell.retweetedByLabel.text = "..."
+            cell.retweetStatusView.isHidden = false
+        } else {
+            cell.retweetStatusView.isHidden = true
+        }
+        
         if let url = tweet.profileImageURL {
             cell.profileImageView.setImageWith(url)
         }
