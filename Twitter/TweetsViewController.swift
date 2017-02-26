@@ -17,8 +17,8 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     
     private(set) var tweets = [Tweet]()
     
-    private(set) var isMoreDataLoading = false
-    private(set) var loadingMoreView: InfiniteScrollActivityView?
+    private var isMoreDataLoading = false
+    private var loadingMoreView: InfiniteScrollActivityView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -143,12 +143,20 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        let callback: (Bool) -> Void = { successful in
+            if successful {
+                self.loadMoreTimelineTweets(mode: .RefreshTweets)
+            }
+        }
+        
         if let identifier = segue.identifier {
             if identifier == "MessageViewController_NEW" {
                 if let newMessageVC = segue.destination as? MessageViewController {
                     newMessageVC.transitioningDelegate = self
                     newMessageVC.modalPresentationStyle = .custom
                     newMessageVC.updateMode = .New
+                    newMessageVC.callback = callback
                 }
             } else if identifier == "MessageViewController_REPLY" {
                 if let replyMessageVC = segue.destination as? MessageViewController {
@@ -157,6 +165,7 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
                     if let tweet = sender as? Tweet {
                         if let id = tweet.id, let screenName = tweet.screenName {
                             replyMessageVC.updateMode = .Reply(id, screenName)
+                            replyMessageVC.callback = callback
                         }
                     }
                 }

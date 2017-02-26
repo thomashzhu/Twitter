@@ -18,9 +18,10 @@ class MessageViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var doneButton: UIButton!
     
     var updateMode: TwitterClient.UpdateMode?
+    var callback: ((Bool) -> Void)?
     
-    private(set) var placeholder: String?
-    private(set) var inReplyToScreenName: String?
+    private var placeholder: String?
+    private var inReplyToScreenName: String?
     
     private var inReplyToUserMention: String {
         if let inReplyToScreenName = inReplyToScreenName {
@@ -76,7 +77,8 @@ class MessageViewController: UIViewController, UITextViewDelegate {
             if let placeholder = placeholder, inReplyToUserMention + messageTextView.text != placeholder {
                 TwitterClient.shared?.updateStatus(message: inReplyToUserMention + messageTextView.text,
                                      inReplyToStatusId: inReplyToStatusId,
-                                     success: { _ in self.dismiss(animated: true, completion: nil) },
+                                     success: { _ in
+                                        self.dismiss(animated: true) { self.callback?(true) }},
                                      failure: { (error) in
                                         let ac = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
                                         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)

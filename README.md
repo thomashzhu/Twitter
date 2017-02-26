@@ -2,7 +2,7 @@
 
 Twitter is a basic twitter app to read and compose tweets the [Twitter API](https://apps.twitter.com/).
 
-Time spent: 15 hours spent in total
+Time spent: 16.5 hours spent in total
 
 ## User Stories
 
@@ -33,11 +33,12 @@ The following **additional** features are implemented:
 - [X] Animations have been added to new/reply message window
 - [X] Character limitation has been implemented for the new/reply functionality
 - [X] User can constantly see how many characters he/she has left
-- [X] Timestamp has been formatted in s/m/h/d/M/y.
+- [X] Timestamp has been formatted in s/m/h/d/M/y
 - [X] User can see who retweeted a tweet
 - [X] User can reply to existing tweets
 - [X] User can see if he/she retweeted or favorited a tweet even after restarting the app
 - [X] Miscellaneous UI changes (blue navigation bar, white status bar, and no status bar in launch screen, etc.)
+- [X] If a new tweet or a reply is successfully submitted, the tweet list will be automatically refreshed
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 

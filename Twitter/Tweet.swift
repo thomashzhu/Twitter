@@ -70,7 +70,7 @@ class Tweet: NSObject {
         }()
         
         self.retweetCount = (dictionary["retweet_count"] as? Int) ?? 0
-        self.favoritesCount = (dictionary["favourites_count"] as? Int) ?? 0
+        self.favoritesCount = (dictionary["favorite_count"] as? Int) ?? 0
         
         self.favorited = dictionary["favorited"] as? Bool
         

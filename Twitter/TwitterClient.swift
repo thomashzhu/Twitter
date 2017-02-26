@@ -47,21 +47,6 @@ class TwitterClient: BDBOAuth1SessionManager {
             progress: nil,
             success: { (_, response: Any?) in
                 if let dictionaries = response as? [[String: AnyObject]] {
-                    /*
-                        // Exclude retweets from the current user when refreshing tweets
-                        if mode == .RefreshTweets {
-                            dictionaries = dictionaries.filter { (dictionary) -> Bool in
-                                if let screenName = dictionary["user"]?["screen_name"] as? String,
-                                    let currentUserScreenName = User.currentUser?.screenName,
-                                    screenName == currentUserScreenName {
-                                    if let retweeted = dictionary["retweeted"] as? Bool, retweeted == true {
-                                        return false
-                                    }
-                                }
-                                return true
-                            }
-                        }
-                    */
                     
                     let tweets = Tweet.tweetsWithArray(dictionaries: dictionaries)
                     
@@ -311,7 +296,6 @@ class TwitterClient: BDBOAuth1SessionManager {
             parameters: ["count": 1],
             progress: nil,
             success: { (_, response: Any?) in
-                print(response)
                 if let response = response as? [[String: AnyObject]], let first = response.first {
                     if let screenName = first["user"]?["screen_name"] as? String {
                         success(screenName)
