@@ -53,6 +53,29 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         loadMoreTimelineTweets(mode: .EarlierTweets)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        
+        if let navigationBar = navigationController?.navigationBar {
+            
+            let height = navigationBar.frame.height
+            let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: height * 0.5, height: height * 0.5))
+            imageView.contentMode = .scaleAspectFit
+            
+            let image = UIImage(named: "twitter_logo_white_no_bg")
+            imageView.image = image
+            
+            navigationItem.titleView = imageView
+            navigationItem.titleView?.alpha = 0.0
+            
+            UIView.animate(withDuration: 2.0,
+                           delay: 0.0,
+                           options: .curveEaseOut,
+                           animations: { self.navigationItem.titleView?.alpha = 1.0 },
+                           completion: nil
+            )
+        }
+    }
+    
     func loadMoreTimelineTweets(mode: TwitterClient.LoadingMode) {
         TwitterClient.shared?.homeTimeline(
             mode: mode,

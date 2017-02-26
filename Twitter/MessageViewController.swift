@@ -19,6 +19,7 @@ class MessageViewController: UIViewController, UITextViewDelegate {
     
     var updateMode: TwitterClient.UpdateMode?
     
+    private(set) var placeholder: String?
     private(set) var inReplyToScreenName: String?
     
     private var inReplyToUserMention: String {
@@ -41,15 +42,16 @@ class MessageViewController: UIViewController, UITextViewDelegate {
             switch updateMode {
             case .New:
                 doneButton.setTitle("COMPOSE", for: .normal)
-                messageTextView.text = "New tweet..."
+                placeholder = "New tweet..."
             case .Reply(_, let screenName):
                 inReplyToScreenName = screenName
                 
                 doneButton.setTitle("REPLY", for: .normal)
-                messageTextView.text = "In reply to \(screenName)..."
+                placeholder = "In reply to \(screenName)..."
             }
         }
         
+        messageTextView.text = placeholder
         messageTextView.alpha = 0.75
         
         characterCountLabel.text = ""
@@ -61,6 +63,7 @@ class MessageViewController: UIViewController, UITextViewDelegate {
     
     @IBAction func doneButtonTapped(_ sender: AnyObject) {
         if let updateMode = updateMode {
+            
             let inReplyToStatusId: String? = {
                 switch updateMode {
                 case .New:
@@ -70,16 +73,20 @@ class MessageViewController: UIViewController, UITextViewDelegate {
                 }
             }()
             
-            TwitterClient.shared?.updateStatus(message: inReplyToUserMention + messageTextView.text,
-                                 inReplyToStatusId: inReplyToStatusId,
-                                 success: { _ in self.dismiss(animated: true, completion: nil) },
-                                 failure: { (error) in
-                                    let ac = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                                    let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                                    ac.addAction(okAction)
-                                    self.present(ac, animated: true, completion: nil)
-                }
-            )
+            if let placeholder = placeholder, inReplyToUserMention + messageTextView.text != placeholder {
+                TwitterClient.shared?.updateStatus(message: inReplyToUserMention + messageTextView.text,
+                                     inReplyToStatusId: inReplyToStatusId,
+                                     success: { _ in self.dismiss(animated: true, completion: nil) },
+                                     failure: { (error) in
+                                        let ac = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                                        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                                        ac.addAction(okAction)
+                                        self.present(ac, animated: true, completion: nil)
+                    }
+                )
+            } else {
+                dismiss(animated: true, completion: nil)
+            }
         }
     }
     

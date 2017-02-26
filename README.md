@@ -22,11 +22,22 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
+- [X] User session is persisted even after they restarted the app
+- [X] Keychain is used to store access token (instead of UserDefaults) for higher security
+- [X] Launch screen is added
+- [X] Customized the login button
+- [X] User can log in and log out of his/her Twitter account
+- [X] Added twitter logo onto the navigation bar
+- [X] Twitter logo on the navigation bar shows fade-in animation
 - [X] User can compose new tweets
-- [X] User can reply to existing tweets
+- [X] Animations have been added to new/reply message window
+- [X] Character limitation has been implemented for the new/reply functionality
+- [X] User can constantly see how many characters he/she has left
+- [X] Timestamp has been formatted in s/m/h/d/M/y.
 - [X] User can see who retweeted a tweet
-- [X] Animations were added.
-- [X] User can see if they retweeted or favorited a tweet even after they restart the app
+- [X] User can reply to existing tweets
+- [X] User can see if he/she retweeted or favorited a tweet even after restarting the app
+- [X] Miscellaneous UI changes (blue navigation bar, white status bar, and no status bar in launch screen, etc.)
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
@@ -47,6 +58,7 @@ Describe any challenges encountered while building the app.
 
 - Authentication and authorization
 - Twitter API limitations
+- Keychain access issue
 
 ## License
 
