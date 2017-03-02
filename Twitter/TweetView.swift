@@ -11,8 +11,6 @@ import AFNetworking
 
 class TweetView: UIStackView {
 
-    // MARK: - IBOutlets
-    
     @IBOutlet weak var retweetStatusView: UIStackView!
     @IBOutlet weak var retweetedByLabel: UILabel!
     
@@ -44,8 +42,10 @@ class TweetView: UIStackView {
         profileImageView.clipsToBounds = true
     }
     
-    // MARK: - IBActions
     
+    /* ====================================================================================================
+        MARK: - IBActions
+     ====================================================================================================== */
     @IBAction func replyButtonTapped(_ sender: AnyObject) {
         if let replyButtonClosure = replyButtonClosure {
             replyButtonClosure()
@@ -84,15 +84,19 @@ class TweetView: UIStackView {
             )
         }
     }
+    /* ==================================================================================================== */
     
-    // MARK: - Determine if a retweet is retweeted by the current user
     
-    /*
-     * The purpose is to determine if the current user is included among the users that 
-     * have retweeted the tweet. If there is no retweet at all, then no check is needed.
-     * However, if there is at least one, then we have to call the show status id API,
-     * and see if there is a current_user_retweet key in the response.
-     */
+    /* ====================================================================================================
+        MARK: - Determine if a retweet is retweeted by the current user
+        DESCRIPTION:
+            The purpose is to determine if the current user is included among the users that 
+            have retweeted the tweet. If there is no retweet at all, then no check is needed.
+            However, if there is at least one, then we have to call the show status id API,
+            and see if there is a current_user_retweet key in the response.
+     ====================================================================================================== */
+    
+    // Starter method
     func determineRetweetStatusAndUpdateUI() {
         if tweet.retweetCount > 0 {
             getIsRetweetedByCurrentUser(completion: cellHeightAdjustmentClosure)
@@ -178,9 +182,14 @@ class TweetView: UIStackView {
             layoutIfNeeded()
         }
     }
+    /* ==================================================================================================== */
     
+    
+    /* ====================================================================================================
+        MARK: - Configure retweet and favorite button
+     ====================================================================================================== */
     // - MARK: Configure the Retweet Button
-    func configureRetweetButton(retweeted: Bool) {
+    private func configureRetweetButton(retweeted: Bool) {
         let image = UIImage(named: (retweeted ? "retweet-icon-green" : "retweet-icon"))
         retweetButton.setImage(image, for: .normal)
         retweetCountLabel.text = "\(tweet.retweetCount)"
@@ -192,4 +201,5 @@ class TweetView: UIStackView {
         favoriteButton.setImage(image, for: .normal)
         favoriteCountLabel.text = "\(tweet.favoritesCount)"
     }
+    /* ==================================================================================================== */
 }

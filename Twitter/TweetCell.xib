@@ -22,7 +22,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="5nX-3b-zFg" userLabel="Main" customClass="TweetView" customModule="Twitter" customModuleProvider="target">
-                        <rect key="frame" x="8" y="8" width="460" height="129.5"/>
+                        <rect key="frame" x="8" y="8" width="460" height="130"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Aor-Db-pra" userLabel="Retweet Status">
                                 <rect key="frame" x="0.0" y="0.0" width="460" height="20"/>
@@ -54,10 +54,10 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="kwZ-Mt-kxG" userLabel="Tweet">
-                                <rect key="frame" x="0.0" y="28" width="460" height="101.5"/>
+                                <rect key="frame" x="0.0" y="28" width="460" height="102"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="R0u-UV-ExP" userLabel="Profile">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="101.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="102"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xN6-ta-qTQ" userLabel="Profile Image View">
                                                 <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
@@ -69,19 +69,19 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="C5r-2W-9kc" userLabel="User and Tweet">
-                                        <rect key="frame" x="58" y="0.0" width="402" height="101.5"/>
+                                        <rect key="frame" x="58" y="0.0" width="402" height="102"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="xcy-jY-ln5" userLabel="User Info &amp; Timestamp">
                                                 <rect key="frame" x="0.0" y="0.0" width="402" height="18"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__USERNAME__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="552-3a-EwK">
-                                                        <rect key="frame" x="0.0" y="0.0" width="97.5" height="18"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="98" height="18"/>
                                                         <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="13"/>
-                                                        <nil key="textColor"/>
+                                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="245" verticalHuggingPriority="251" horizontalCompressionResistancePriority="745" text="__SCREEN_NAME__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.75" translatesAutoresizingMaskIntoConstraints="NO" id="dnv-mY-Hf4">
-                                                        <rect key="frame" x="105.5" y="0.0" width="190.5" height="18"/>
+                                                        <rect key="frame" x="106" y="0.0" width="190" height="18"/>
                                                         <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
                                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                         <nil key="highlightedColor"/>
@@ -95,13 +95,13 @@
                                                 </subviews>
                                             </stackView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="755" text="__TWEET__" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sG4-aw-kLV">
-                                                <rect key="frame" x="0.0" y="18" width="402" height="63.5"/>
+                                                <rect key="frame" x="0.0" y="18" width="402" height="64"/>
                                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
-                                                <nil key="textColor"/>
+                                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="12M-xF-cly" userLabel="Actions">
-                                                <rect key="frame" x="0.0" y="81.5" width="402" height="20"/>
+                                                <rect key="frame" x="0.0" y="82" width="402" height="20"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OTs-pH-n5h">
                                                         <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
@@ -110,7 +110,7 @@
                                                         </constraints>
                                                         <state key="normal" image="reply-icon"/>
                                                         <connections>
-                                                            <action selector="replyButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="ekc-yy-4ZX"/>
+                                                            <action selector="replyButtonTapped:" destination="5nX-3b-zFg" eventType="touchUpInside" id="Qzc-6K-Vfr"/>
                                                         </connections>
                                                     </button>
                                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="MpV-q6-hWH" userLabel="Retweet">
@@ -123,7 +123,7 @@
                                                                 </constraints>
                                                                 <state key="normal" image="retweet-icon"/>
                                                                 <connections>
-                                                                    <action selector="retweetButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="68U-JI-iXd"/>
+                                                                    <action selector="retweetButtonTapped:" destination="5nX-3b-zFg" eventType="touchUpInside" id="oWg-dm-jIt"/>
                                                                 </connections>
                                                             </button>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__R__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Exc-lk-kO7">
@@ -144,7 +144,7 @@
                                                                 </constraints>
                                                                 <state key="normal" image="favor-icon"/>
                                                                 <connections>
-                                                                    <action selector="favoriteButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="p49-8l-Fls"/>
+                                                                    <action selector="favoriteButtonTapped:" destination="5nX-3b-zFg" eventType="touchUpInside" id="noO-bG-zGd"/>
                                                                 </connections>
                                                             </button>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__F__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aKI-sg-DNu">
@@ -173,6 +173,20 @@
                         <constraints>
                             <constraint firstItem="STu-Um-5Bb" firstAttribute="width" secondItem="xN6-ta-qTQ" secondAttribute="width" id="sWm-tJ-LJe"/>
                         </constraints>
+                        <connections>
+                            <outlet property="favoriteButton" destination="4gi-Qe-AXj" id="Fml-5m-ukl"/>
+                            <outlet property="favoriteCountLabel" destination="aKI-sg-DNu" id="CKt-Bj-YAi"/>
+                            <outlet property="profileImageView" destination="xN6-ta-qTQ" id="ydj-nJ-EV3"/>
+                            <outlet property="replyButton" destination="OTs-pH-n5h" id="2kb-59-61a"/>
+                            <outlet property="retweetButton" destination="hs7-fb-F0L" id="N3V-q0-TPj"/>
+                            <outlet property="retweetCountLabel" destination="Exc-lk-kO7" id="Diw-pw-ZNe"/>
+                            <outlet property="retweetStatusView" destination="Aor-Db-pra" id="6Ht-ya-Kuz"/>
+                            <outlet property="retweetedByLabel" destination="8YU-ZE-nD3" id="MUH-lT-SDf"/>
+                            <outlet property="screenNameLabel" destination="dnv-mY-Hf4" id="HXt-Ci-g80"/>
+                            <outlet property="timestampLabel" destination="F95-Uw-Cqe" id="Tau-Zw-LUS"/>
+                            <outlet property="tweetLabel" destination="sG4-aw-kLV" id="4Nj-Ro-MUm"/>
+                            <outlet property="usernameLabel" destination="552-3a-EwK" id="M3p-8l-oyO"/>
+                        </connections>
                     </stackView>
                 </subviews>
                 <constraints>
@@ -183,19 +197,9 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
-                <outlet property="favoriteButton" destination="4gi-Qe-AXj" id="MNj-Z3-fkb"/>
                 <outlet property="favoriteCountLabel" destination="aKI-sg-DNu" id="zEh-8c-MAw"/>
-                <outlet property="profileImageView" destination="xN6-ta-qTQ" id="VGT-jh-tMg"/>
-                <outlet property="replyButton" destination="OTs-pH-n5h" id="qtp-F2-JrJ"/>
-                <outlet property="retweetButton" destination="hs7-fb-F0L" id="uHZ-c6-eDl"/>
                 <outlet property="retweetCountLabel" destination="Exc-lk-kO7" id="JbL-PZ-1MO"/>
-                <outlet property="retweetStatusView" destination="Aor-Db-pra" id="ngr-K4-XB3"/>
-                <outlet property="retweetedByLabel" destination="8YU-ZE-nD3" id="o6D-Be-nrY"/>
-                <outlet property="screenNameLabel" destination="dnv-mY-Hf4" id="uRz-hU-muR"/>
-                <outlet property="timestampLabel" destination="F95-Uw-Cqe" id="dsj-KG-U5F"/>
-                <outlet property="tweetLabel" destination="sG4-aw-kLV" id="ayd-tR-KfJ"/>
                 <outlet property="tweetView" destination="5nX-3b-zFg" id="CXv-9v-USI"/>
-                <outlet property="usernameLabel" destination="552-3a-EwK" id="txh-i7-Qlb"/>
             </connections>
             <point key="canvasLocation" x="7" y="33"/>
         </tableViewCell>

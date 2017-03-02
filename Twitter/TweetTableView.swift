@@ -74,7 +74,7 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, U
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if let cell = tableView.dequeueReusableCell(withIdentifier: "TweetCell", for: indexPath) as? TweetCell {
-            configureUI(tweetView: cell.tweetView, indexPath: indexPath)
+            configureCell(tweetView: cell.tweetView, indexPath: indexPath)
             return cell
         }
         
@@ -113,8 +113,8 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, U
         MARK: - Private methods
      ====================================================================================================== */
     
-    // MARK: Configure cell UI
-    private func configureUI(tweetView: TweetView, indexPath: IndexPath) {
+    // MARK: Configure cell
+    private func configureCell(tweetView: TweetView, indexPath: IndexPath) {
         
         let tweet = tweets[indexPath.row]
         tweetView.tweet = tweet

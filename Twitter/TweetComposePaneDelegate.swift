@@ -10,10 +10,10 @@ import UIKit
 
 class MessageViewDelegate: NSObject, UIViewControllerTransitioningDelegate {
     
-    private let tableView: TweetTableView!
+    private let tableView: TweetTableView?
     private let tweet: Tweet?
     
-    init(tableViewToBeReloadedUponCompletion tableView: TweetTableView, tweetInReplyTo tweet: Tweet?) {
+    init(tableViewToBeReloadedUponCompletion tableView: TweetTableView?, tweetInReplyTo tweet: Tweet?) {
         self.tableView = tableView
         self.tweet = tweet
     }
@@ -40,7 +40,7 @@ class MessageViewDelegate: NSObject, UIViewControllerTransitioningDelegate {
              */
             let callback: (Bool) -> Void = { successful in
                 if successful {
-                    self.tableView.loadMoreTweets(mode: .RefreshTweets)
+                    self.tableView?.loadMoreTweets(mode: .RefreshTweets)
                 }
             }
             

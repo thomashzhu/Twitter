@@ -8,6 +8,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -99,11 +100,223 @@
                     </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="xyt-3e-Chn" id="tx5-cW-Fk8"/>
+                        <segue destination="uzK-tk-OJP" kind="show" identifier="TweetDetailViewController" id="OlR-bj-y0b"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hsg-q8-vYY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1454" y="139"/>
+        </scene>
+        <!--Tweet Detail View Controller-->
+        <scene sceneID="TgO-Ia-eNN">
+            <objects>
+                <viewController id="uzK-tk-OJP" customClass="TweetDetailViewController" customModule="Twitter" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="0uR-qG-nnI"/>
+                        <viewControllerLayoutGuide type="bottom" id="AGd-QL-32p"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="CjY-CT-aCz">
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="HpY-FU-ajc" userLabel="Main" customClass="TweetView" customModule="Twitter" customModuleProvider="target">
+                                <rect key="frame" x="16" y="8" width="343" height="199.5"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="bdC-ux-iiX" userLabel="Retweet Status">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="20"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hx4-UD-XDL">
+                                                <rect key="frame" x="0.0" y="0.0" width="50" height="20"/>
+                                                <subviews>
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="retweet-icon" translatesAutoresizingMaskIntoConstraints="NO" id="dMG-rv-Z4N" userLabel="Retweeted Indicator">
+                                                        <rect key="frame" x="30" y="0.0" width="20" height="20"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" constant="20" id="a5E-LT-FY6"/>
+                                                        </constraints>
+                                                    </imageView>
+                                                </subviews>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstItem="dMG-rv-Z4N" firstAttribute="top" secondItem="hx4-UD-XDL" secondAttribute="top" id="HSC-sn-eKf"/>
+                                                    <constraint firstAttribute="bottom" secondItem="dMG-rv-Z4N" secondAttribute="bottom" id="JlR-WA-8Wa"/>
+                                                    <constraint firstAttribute="trailing" secondItem="dMG-rv-Z4N" secondAttribute="trailing" id="en8-0w-bP5"/>
+                                                    <constraint firstAttribute="height" constant="20" id="mq6-wn-dru"/>
+                                                </constraints>
+                                            </view>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="_RETWEETED__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rmF-Qk-k6V">
+                                                <rect key="frame" x="58" y="0.0" width="285" height="20"/>
+                                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
+                                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="GBf-lC-BWI" userLabel="Tweet">
+                                        <rect key="frame" x="0.0" y="28" width="343" height="50"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3c4-56-S9M" userLabel="Profile Image View">
+                                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="3c4-56-S9M" secondAttribute="height" multiplier="1:1" id="4vL-ux-Iwl"/>
+                                                    <constraint firstAttribute="height" constant="50" id="iTe-Iy-jAy"/>
+                                                </constraints>
+                                            </imageView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="ZQc-u6-l22" userLabel="User Info &amp; Timestamp">
+                                                <rect key="frame" x="58" y="0.0" width="285" height="50"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__USERNAME__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xSe-f8-eiT">
+                                                        <rect key="frame" x="0.0" y="0.0" width="285" height="18"/>
+                                                        <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="13"/>
+                                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="KJW-QC-o0C">
+                                                        <rect key="frame" x="0.0" y="20" width="285" height="30"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="245" verticalHuggingPriority="245" horizontalCompressionResistancePriority="745" verticalCompressionResistancePriority="745" text="__SCREEN_NAME__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.75" translatesAutoresizingMaskIntoConstraints="NO" id="NIq-dp-k1S">
+                                                                <rect key="frame" x="0.0" y="0.0" width="285" height="15.5"/>
+                                                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="11"/>
+                                                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                    </stackView>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="755" text="__TWEET__" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vR0-dY-ydR">
+                                        <rect key="frame" x="0.0" y="86" width="343" height="18"/>
+                                        <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
+                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__TIMESTAMP__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bh2-6C-bOs">
+                                        <rect key="frame" x="0.0" y="112" width="343" height="15.5"/>
+                                        <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="11"/>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Ty4-aM-Jvs">
+                                        <rect key="frame" x="0.0" y="135.5" width="343" height="36"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nTK-Uh-45q" userLabel="Border">
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="1"/>
+                                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="1" id="Jqy-yz-C9I"/>
+                                                </constraints>
+                                            </view>
+                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Dch-NF-mdp">
+                                                <rect key="frame" x="0.0" y="9" width="343" height="18"/>
+                                                <subviews>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="eEI-nL-EAK">
+                                                        <rect key="frame" x="0.0" y="0.0" width="103.5" height="18"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__R__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HeF-u3-I9E">
+                                                                <rect key="frame" x="0.0" y="0.0" width="34" height="18"/>
+                                                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
+                                                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RETWEETS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qYD-Uv-4mZ">
+                                                                <rect key="frame" x="38" y="0.0" width="65.5" height="18"/>
+                                                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
+                                                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                    </stackView>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="JPh-jg-wWA">
+                                                        <rect key="frame" x="111.5" y="0.0" width="131" height="18"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__F__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a9j-p8-SMV">
+                                                                <rect key="frame" x="0.0" y="0.0" width="33.5" height="18"/>
+                                                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
+                                                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__FAVORITES__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lcQ-a0-A5g">
+                                                                <rect key="frame" x="37.5" y="0.0" width="93.5" height="18"/>
+                                                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
+                                                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                    </stackView>
+                                                    <view contentMode="scaleToFill" horizontalHuggingPriority="245" horizontalCompressionResistancePriority="745" placeholderIntrinsicWidth="96.5" placeholderIntrinsicHeight="infinite" translatesAutoresizingMaskIntoConstraints="NO" id="yVJ-P5-xGS">
+                                                        <rect key="frame" x="250.5" y="0.0" width="92.5" height="18"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </view>
+                                                </subviews>
+                                            </stackView>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pom-PQ-Yuh" userLabel="Border">
+                                                <rect key="frame" x="0.0" y="35" width="343" height="1"/>
+                                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="1" id="w84-dk-MED"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="3SG-Kx-8y8" userLabel="Actions">
+                                        <rect key="frame" x="0.0" y="179.5" width="343" height="20"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A41-df-ZE8">
+                                                <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="20" id="lYt-tX-IxV"/>
+                                                </constraints>
+                                                <state key="normal" image="reply-icon"/>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rbp-vx-nYc">
+                                                <rect key="frame" x="57.5" y="0.0" width="20" height="20"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="20" id="B0O-EI-6fa"/>
+                                                </constraints>
+                                                <state key="normal" image="retweet-icon"/>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aSv-oI-TNK">
+                                                <rect key="frame" x="114.5" y="0.0" width="20" height="20"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="20" id="WRV-rb-eUs"/>
+                                                </constraints>
+                                                <state key="normal" image="favor-icon"/>
+                                            </button>
+                                            <view contentMode="scaleToFill" horizontalCompressionResistancePriority="745" translatesAutoresizingMaskIntoConstraints="NO" id="Xul-5F-jzK" userLabel="Blank View">
+                                                <rect key="frame" x="172" y="0.0" width="171" height="20"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </view>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="Xul-5F-jzK" firstAttribute="width" secondItem="3SG-Kx-8y8" secondAttribute="width" multiplier="0.5" id="B2A-7m-ylW"/>
+                                            <constraint firstAttribute="height" constant="20" id="p7l-9V-5lD"/>
+                                        </constraints>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="hx4-UD-XDL" firstAttribute="width" secondItem="3c4-56-S9M" secondAttribute="width" id="vvh-2o-Ymx"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="usernameLabel" destination="xSe-f8-eiT" id="W0n-eI-Xkb"/>
+                                </connections>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="HpY-FU-ajc" secondAttribute="trailing" id="Db9-wK-cbJ"/>
+                            <constraint firstItem="AGd-QL-32p" firstAttribute="top" relation="greaterThanOrEqual" secondItem="HpY-FU-ajc" secondAttribute="bottom" constant="8" id="XZ3-Zo-KXG"/>
+                            <constraint firstItem="HpY-FU-ajc" firstAttribute="top" secondItem="0uR-qG-nnI" secondAttribute="bottom" constant="8" id="nyu-8q-y7o"/>
+                            <constraint firstItem="HpY-FU-ajc" firstAttribute="leading" secondItem="CjY-CT-aCz" secondAttribute="leadingMargin" id="oLR-Ft-afV"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tweetView" destination="HpY-FU-ajc" id="M4g-bv-g7Q"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1fC-tj-1zm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2206" y="139"/>
         </scene>
         <!--Message View Controller-->
         <scene sceneID="15v-3R-kP7">
@@ -204,17 +417,20 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="M7d-8x-fvq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1453.5999999999999" y="866.71664167916049"/>
+            <point key="canvasLocation" x="1454" y="832"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="uha-qu-WFw">
             <objects>
                 <navigationController storyboardIdentifier="TweetsNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="45r-pL-02D" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="9Xp-nv-2EB">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="9Xp-nv-2EB">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" red="0.20392156862745098" green="0.54117647058823526" blue="0.95294117647058818" alpha="1" colorSpace="calibratedRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -227,6 +443,9 @@
         </scene>
     </scenes>
     <resources>
+        <image name="favor-icon" width="30" height="30"/>
+        <image name="reply-icon" width="30" height="30"/>
+        <image name="retweet-icon" width="30" height="30"/>
         <image name="twitter_login_button" width="233" height="140"/>
         <image name="twitter_logo_white_no_bg" width="1139" height="926"/>
     </resources>
