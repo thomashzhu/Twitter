@@ -24,17 +24,7 @@ class TweetsViewController: UIViewController, UIViewControllerTransitioningDeleg
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.tableView.hostingVC = self
-        self.tableView.tweets = [Tweet]()
-        
-        self.tableView.estimatedRowHeight = 150
-        
-        loadMoreTweets(mode: .EarlierTweets)
-    }
-    
-    // Configure UI of the navigation bar
-    override func viewDidAppear(_ animated: Bool) {
-        
+        // Configure UI of the navigation bar
         if let navigationBar = navigationController?.navigationBar {
             
             let height = navigationBar.frame.height
@@ -54,6 +44,13 @@ class TweetsViewController: UIViewController, UIViewControllerTransitioningDeleg
                            completion: nil
             )
         }
+        
+        self.tableView.hostingVC = self
+        self.tableView.tweets = [Tweet]()
+        
+        self.tableView.estimatedRowHeight = 150
+        
+        loadMoreTweets(mode: .EarlierTweets)
     }
     /* ==================================================================================================== */
     

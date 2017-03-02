@@ -197,8 +197,6 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
-                <outlet property="favoriteCountLabel" destination="aKI-sg-DNu" id="zEh-8c-MAw"/>
-                <outlet property="retweetCountLabel" destination="Exc-lk-kO7" id="JbL-PZ-1MO"/>
                 <outlet property="tweetView" destination="5nX-3b-zFg" id="CXv-9v-USI"/>
             </connections>
             <point key="canvasLocation" x="7" y="33"/>

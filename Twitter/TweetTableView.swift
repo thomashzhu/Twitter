@@ -12,7 +12,7 @@ protocol ReloadableTweetTableViewProtocol {
     func loadMoreTweets(mode: TwitterClient.LoadingMode)
 }
 
-class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate {
+class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     
     var hostingVC: ReloadableTweetTableViewProtocol!
     var tweets: [Tweet]!
@@ -108,7 +108,7 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, U
     }
     /* ==================================================================================================== */
     
- 
+    
     /* ====================================================================================================
         MARK: - Private methods
      ====================================================================================================== */
@@ -143,6 +143,13 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, U
         
         tweetView.tweetLabel.text = tweet.text
         
+        // Add tap gesture to trigger tweet detail VC
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.showTweetDetail(tapRecognizer:)))
+        tapRecognizer.delegate = self
+        tweetView.tweetLabel.addGestureRecognizer(tapRecognizer)
+        tweetView.tweetLabel.isUserInteractionEnabled = true
+        tapRecognizer.view?.tag = indexPath.row
+        
         tweetView.cellHeightAdjustmentClosure = {
             self.reloadRows(at: [indexPath], with: .none)
         }
@@ -155,6 +162,41 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, U
         
         if let favorited = tweet.favorited {
             tweetView.configureFavoriteButton(favorited: favorited)
+        }
+    }
+    /* ==================================================================================================== */
+    
+    
+    /* ====================================================================================================
+     MARK: - Segue methods
+     ====================================================================================================== */
+    
+    // Segue to TweetDetailViewController
+    func showTweetDetail(tapRecognizer: UITapGestureRecognizer) {
+        if let rowId = tapRecognizer.view?.tag {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            
+            if let vc = storyboard.instantiateViewController(withIdentifier: "TweetDetailViewController") as? TweetDetailViewController {
+                
+                let indexPath = IndexPath(row: rowId, section: 0)
+                if let cell = cellForRow(at: indexPath) as? TweetCell {
+                    vc.cell = cell
+                    
+                    if let navigationController = UIApplication.shared.keyWindow?.rootViewController as? UINavigationController {
+                        vc.completionBlock = { tweetView in
+                            cell.tweetView.retweetStatusView.isHidden = tweetView.retweetStatusView.isHidden
+                            cell.tweetView.retweetedByLabel.text = tweetView.retweetedByLabel.text
+                            
+                            cell.tweetView.retweetButton.setImage(tweetView.retweetButton.image(for: .normal), for: .normal)
+                            cell.tweetView.retweetCountLabel.text = tweetView.retweetCountLabel.text
+                            
+                            cell.tweetView.favoriteButton.setImage(tweetView.favoriteButton.image(for: .normal), for: .normal)
+                            cell.tweetView.favoriteCountLabel.text = tweetView.favoriteCountLabel.text
+                        }
+                        navigationController.pushViewController(vc, animated: true)
+                    }
+                }
+            }
         }
     }
     /* ==================================================================================================== */

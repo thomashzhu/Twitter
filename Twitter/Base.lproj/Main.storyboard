@@ -110,7 +110,7 @@
         <!--Tweet Detail View Controller-->
         <scene sceneID="TgO-Ia-eNN">
             <objects>
-                <viewController id="uzK-tk-OJP" customClass="TweetDetailViewController" customModule="Twitter" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TweetDetailViewController" id="uzK-tk-OJP" customClass="TweetDetailViewController" customModule="Twitter" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="0uR-qG-nnI"/>
                         <viewControllerLayoutGuide type="bottom" id="AGd-QL-32p"/>
@@ -228,7 +228,7 @@
                                                         </subviews>
                                                     </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="JPh-jg-wWA">
-                                                        <rect key="frame" x="111.5" y="0.0" width="131" height="18"/>
+                                                        <rect key="frame" x="111.5" y="0.0" width="105" height="18"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__F__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a9j-p8-SMV">
                                                                 <rect key="frame" x="0.0" y="0.0" width="33.5" height="18"/>
@@ -236,8 +236,8 @@
                                                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__FAVORITES__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lcQ-a0-A5g">
-                                                                <rect key="frame" x="37.5" y="0.0" width="93.5" height="18"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="FAVORITES" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lcQ-a0-A5g">
+                                                                <rect key="frame" x="37.5" y="0.0" width="67.5" height="18"/>
                                                                 <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
                                                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                                 <nil key="highlightedColor"/>
@@ -245,7 +245,7 @@
                                                         </subviews>
                                                     </stackView>
                                                     <view contentMode="scaleToFill" horizontalHuggingPriority="245" horizontalCompressionResistancePriority="745" placeholderIntrinsicWidth="96.5" placeholderIntrinsicHeight="infinite" translatesAutoresizingMaskIntoConstraints="NO" id="yVJ-P5-xGS">
-                                                        <rect key="frame" x="250.5" y="0.0" width="92.5" height="18"/>
+                                                        <rect key="frame" x="224.5" y="0.0" width="118.5" height="18"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     </view>
                                                 </subviews>
@@ -268,6 +268,9 @@
                                                     <constraint firstAttribute="width" constant="20" id="lYt-tX-IxV"/>
                                                 </constraints>
                                                 <state key="normal" image="reply-icon"/>
+                                                <connections>
+                                                    <action selector="replyButtonTapped:" destination="HpY-FU-ajc" eventType="touchUpInside" id="ge1-OY-5G5"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rbp-vx-nYc">
                                                 <rect key="frame" x="57.5" y="0.0" width="20" height="20"/>
@@ -275,6 +278,9 @@
                                                     <constraint firstAttribute="width" constant="20" id="B0O-EI-6fa"/>
                                                 </constraints>
                                                 <state key="normal" image="retweet-icon"/>
+                                                <connections>
+                                                    <action selector="retweetButtonTapped:" destination="HpY-FU-ajc" eventType="touchUpInside" id="bUA-sX-bnX"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aSv-oI-TNK">
                                                 <rect key="frame" x="114.5" y="0.0" width="20" height="20"/>
@@ -282,6 +288,9 @@
                                                     <constraint firstAttribute="width" constant="20" id="WRV-rb-eUs"/>
                                                 </constraints>
                                                 <state key="normal" image="favor-icon"/>
+                                                <connections>
+                                                    <action selector="favoriteButtonTapped:" destination="HpY-FU-ajc" eventType="touchUpInside" id="58U-Pb-q4a"/>
+                                                </connections>
                                             </button>
                                             <view contentMode="scaleToFill" horizontalCompressionResistancePriority="745" translatesAutoresizingMaskIntoConstraints="NO" id="Xul-5F-jzK" userLabel="Blank View">
                                                 <rect key="frame" x="172" y="0.0" width="171" height="20"/>
@@ -298,6 +307,17 @@
                                     <constraint firstItem="hx4-UD-XDL" firstAttribute="width" secondItem="3c4-56-S9M" secondAttribute="width" id="vvh-2o-Ymx"/>
                                 </constraints>
                                 <connections>
+                                    <outlet property="favoriteButton" destination="aSv-oI-TNK" id="I44-tb-4TT"/>
+                                    <outlet property="favoriteCountLabel" destination="a9j-p8-SMV" id="iN6-Ua-qfr"/>
+                                    <outlet property="profileImageView" destination="3c4-56-S9M" id="nXw-5K-3AE"/>
+                                    <outlet property="replyButton" destination="A41-df-ZE8" id="uzJ-jn-w6G"/>
+                                    <outlet property="retweetButton" destination="Rbp-vx-nYc" id="yT4-rj-lvj"/>
+                                    <outlet property="retweetCountLabel" destination="HeF-u3-I9E" id="FsM-vk-Qq6"/>
+                                    <outlet property="retweetStatusView" destination="bdC-ux-iiX" id="FIz-IY-USG"/>
+                                    <outlet property="retweetedByLabel" destination="rmF-Qk-k6V" id="jzW-6h-uHM"/>
+                                    <outlet property="screenNameLabel" destination="NIq-dp-k1S" id="LLW-57-ajo"/>
+                                    <outlet property="timestampLabel" destination="Bh2-6C-bOs" id="iKH-xO-dgb"/>
+                                    <outlet property="tweetLabel" destination="vR0-dY-ydR" id="2me-6a-kjJ"/>
                                     <outlet property="usernameLabel" destination="xSe-f8-eiT" id="W0n-eI-Xkb"/>
                                 </connections>
                             </stackView>
