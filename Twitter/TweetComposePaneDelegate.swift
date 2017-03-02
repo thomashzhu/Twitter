@@ -8,17 +8,13 @@
 
 import UIKit
 
-protocol ReloadableTweetTableViewProtocol {
-    func loadMoreTimelineTweets(mode: TwitterClient.LoadingMode)
-}
-
 class MessageViewDelegate: NSObject, UIViewControllerTransitioningDelegate {
     
-    private let vc: ReloadableTweetTableViewProtocol
+    private let tableView: TweetTableView!
     private let tweet: Tweet?
     
-    init(vc: ReloadableTweetTableViewProtocol, tweet: Tweet?) {
-        self.vc = vc
+    init(tableView: TweetTableView, tweet: Tweet?) {
+        self.tableView = tableView
         self.tweet = tweet
     }
     
@@ -29,11 +25,12 @@ class MessageViewDelegate: NSObject, UIViewControllerTransitioningDelegate {
     func present(mode: MessageViewDelegate.Mode) {
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
         if let messageVC = storyboard.instantiateViewController(withIdentifier: "MessageViewController") as? MessageViewController {
         
             let callback: (Bool) -> Void = { successful in
                 if successful {
-                    self.vc.loadMoreTimelineTweets(mode: .RefreshTweets)
+                    self.tableView.loadMoreTweets(mode: .RefreshTweets)
                 }
             }
             
@@ -54,6 +51,9 @@ class MessageViewDelegate: NSObject, UIViewControllerTransitioningDelegate {
                     }
                 }
             }
+            
+            let rootVC = UIApplication.shared.keyWindow?.rootViewController
+            rootVC?.present(messageVC, animated: true, completion: nil)
         }
     }
     

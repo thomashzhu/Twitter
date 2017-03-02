@@ -11,8 +11,7 @@ import pop
 
 class TweetsViewController: UIViewController, UIScrollViewDelegate, UIViewControllerTransitioningDelegate, ReloadableTweetTableViewProtocol {
     
-    private(set) var tableView = TweetTableView()
-    private(set) var tweets = [Tweet]()
+    @IBOutlet weak var tableView: TweetTableView!
     
     private(set) var messageViewDelegate: MessageViewDelegate!
     
@@ -24,7 +23,8 @@ class TweetsViewController: UIViewController, UIScrollViewDelegate, UIViewContro
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.tweets = tweets
+        self.tableView.hostingVC = self
+        self.tableView.tweets = [Tweet]()
         
         // Set up Pull-to-refresh view
         refreshControl.addTarget(self, action: #selector(self.loadMoreTimelineTweets(mode:)), for: .valueChanged)
@@ -75,10 +75,10 @@ class TweetsViewController: UIViewController, UIScrollViewDelegate, UIViewContro
 
                 switch mode {
                 case .RefreshTweets:
-                    self.tweets.insert(contentsOf: tweets, at: 0)
+                    self.tableView.tweets.insert(contentsOf: tweets, at: 0)
                     self.refreshControl.endRefreshing()
                 case .EarlierTweets:
-                    self.tweets.append(contentsOf: tweets)
+                    self.tableView.tweets.append(contentsOf: tweets)
                 }
                 
                 self.tableView.reloadData()},
@@ -109,7 +109,7 @@ class TweetsViewController: UIViewController, UIScrollViewDelegate, UIViewContro
     }
     
     @IBAction func newMessagePressed(_ sender: AnyObject) {
-        messageViewDelegate = MessageViewDelegate(vc: self, tweet: nil)
+        messageViewDelegate = MessageViewDelegate(tableView: tableView, tweet: nil)
         messageViewDelegate.present(mode: .New)
     }
 }

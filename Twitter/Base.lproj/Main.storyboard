@@ -64,7 +64,7 @@
                         <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="xyt-3e-Chn">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="xyt-3e-Chn" customClass="TweetTableView" customModule="Twitter" customModuleProvider="target">
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </tableView>
                         </subviews>
@@ -87,13 +87,11 @@
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
                                 <action selector="newMessagePressed:" destination="f55-aP-ULS" id="EMb-7I-XRH"/>
-                                <segue destination="XsM-F3-eNj" kind="presentation" identifier="MessageViewController_NEW" id="RSr-nP-6nk"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="tableView" destination="xyt-3e-Chn" id="zP8-bM-f69"/>
-                        <segue destination="XsM-F3-eNj" kind="presentation" identifier="MessageViewController_REPLY" id="368-Wt-r06"/>
+                        <outlet property="tableView" destination="xyt-3e-Chn" id="tx5-cW-Fk8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hsg-q8-vYY" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -219,7 +217,4 @@
         <image name="twitter_login_button" width="233" height="140"/>
         <image name="twitter_logo_white_no_bg" width="1139" height="926"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="RSr-nP-6nk"/>
-    </inferredMetricsTieBreakers>
 </document>

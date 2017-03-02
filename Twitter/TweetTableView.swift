@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol ReloadableTweetTableViewProtocol {
+    func loadMoreTimelineTweets(mode: TwitterClient.LoadingMode)
+}
+
 class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     
     var hostingVC: ReloadableTweetTableViewProtocol!
@@ -38,10 +42,13 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         return tweets.count
     }
 
+    func loadMoreTweets(mode: TwitterClient.LoadingMode) {
+        hostingVC.loadMoreTimelineTweets(mode: mode)
+    }
+    
     private func configureUI(cell: TweetCell, indexPath: IndexPath) {
         
         let tweet = tweets[indexPath.row]
-        
         cell.tweet = tweet
         
         // If the network is slow, it might take a while to load a retweeted user's name, so UI changes might
@@ -74,7 +81,7 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         cell.determineRetweetStatusAndUpdateUI()
         
         cell.replyButtonClosure = {
-            let delegate = MessageViewDelegate(vc: self.hostingVC, tweet: tweet)
+            let delegate = MessageViewDelegate(tableView: self, tweet: tweet)
             delegate.present(mode: .Reply)
         }
         
@@ -82,5 +89,7 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
             cell.configureFavoriteButton(favorited: favorited)
         }
     }
+    
+    
 
 }
