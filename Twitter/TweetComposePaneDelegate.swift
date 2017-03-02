@@ -13,7 +13,7 @@ class MessageViewDelegate: NSObject, UIViewControllerTransitioningDelegate {
     private let tableView: TweetTableView!
     private let tweet: Tweet?
     
-    init(tableView: TweetTableView, tweet: Tweet?) {
+    init(tableViewToBeReloadedUponCompletion tableView: TweetTableView, tweetInReplyTo tweet: Tweet?) {
         self.tableView = tableView
         self.tweet = tweet
     }
@@ -22,28 +22,36 @@ class MessageViewDelegate: NSObject, UIViewControllerTransitioningDelegate {
         case New, Reply
     }
     
+    
+    /* ====================================================================================================
+        MARK: - Present MessageViewController
+        DESCRIPTION: Present new or reply message pane based on the mode that's passed in
+     ====================================================================================================== */
     func present(mode: MessageViewDelegate.Mode) {
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         
         if let messageVC = storyboard.instantiateViewController(withIdentifier: "MessageViewController") as? MessageViewController {
         
+            /*
+                This callback will be passed into MessageViewController. Once a tweet is done composing,
+                this callback will trigger the loadMoreTweets pass-through method, which will eventually
+                be passed to whichever hosting view controller that implements the loadMoreTweets method
+             */
             let callback: (Bool) -> Void = { successful in
                 if successful {
                     self.tableView.loadMoreTweets(mode: .RefreshTweets)
                 }
             }
             
+            messageVC.transitioningDelegate = self
+            messageVC.modalPresentationStyle = .custom
+            
             switch mode {
             case .New:
-                messageVC.transitioningDelegate = self
-                messageVC.modalPresentationStyle = .custom
                 messageVC.updateMode = .New
                 messageVC.callback = callback
-                
             case .Reply:
-                messageVC.transitioningDelegate = self
-                messageVC.modalPresentationStyle = .custom
                 if let tweet = tweet {
                     if let id = tweet.id, let screenName = tweet.screenName {
                         messageVC.updateMode = .Reply(id, screenName)
@@ -56,9 +64,12 @@ class MessageViewDelegate: NSObject, UIViewControllerTransitioningDelegate {
             rootVC?.present(messageVC, animated: true, completion: nil)
         }
     }
+    /* ==================================================================================================== */
     
-    // MARK: - Facebook Pop
     
+    /* ====================================================================================================
+        MARK: - UIViewControllerTransitioningDelegate method with Facebook POP
+     ====================================================================================================== */
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return PresentingAnimationController()
     }
@@ -66,4 +77,5 @@ class MessageViewDelegate: NSObject, UIViewControllerTransitioningDelegate {
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return DismissingAnimationController()
     }
+    /* ==================================================================================================== */
 }

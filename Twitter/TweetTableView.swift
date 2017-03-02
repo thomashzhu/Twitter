@@ -9,25 +9,68 @@
 import UIKit
 
 protocol ReloadableTweetTableViewProtocol {
-    func loadMoreTimelineTweets(mode: TwitterClient.LoadingMode)
+    func loadMoreTweets(mode: TwitterClient.LoadingMode)
 }
 
-class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
+class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate {
     
     var hostingVC: ReloadableTweetTableViewProtocol!
     var tweets: [Tweet]!
     
+    // Pull-to-refresh variable
+    var tableViewRefreshControl = UIRefreshControl()
+    
+    // Infinite scrolling variables
+    var isMoreDataLoading = false
+    var loadingMoreView: InfiniteScrollActivityView?
+    
+    
+    /* ====================================================================================================
+        DESCRIPTION: Delegation, UI preparation
+     ====================================================================================================== */
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        // TableViewDataSource and UITableViewDelegate delegation
         self.dataSource = self
         self.delegate = self
-        self.estimatedRowHeight = 150
         
+        // Associate TweetCell xib to this table view
         let nib = UINib(nibName: "TweetCell", bundle: nil)
         self.register(nib, forCellReuseIdentifier: "TweetCell")
+        
+        // Set up pull-to-refresh view
+        tableViewRefreshControl = UIRefreshControl()
+        tableViewRefreshControl.addTarget(self, action: #selector(self.loadMoreTweets(mode:)), for: .valueChanged)
+        self.insertSubview(tableViewRefreshControl, at: 0)
+        
+        // Set up infinite scroll loading indicator
+        let frame = CGRect(x: 0, y: self.contentSize.height, width: self.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+        loadingMoreView = InfiniteScrollActivityView(frame: frame)
+        loadingMoreView!.isHidden = true
+        self.addSubview(loadingMoreView!)
+        
+        // ScrollView content size adjustment
+        var insets = self.contentInset
+        insets.bottom += InfiniteScrollActivityView.defaultHeight
+        self.contentInset = insets
     }
+    /* ==================================================================================================== */
     
+    
+    /* ====================================================================================================
+        DESCRIPTION: Once the new/reply tweet is done composing, this method will be called. The mode (.New or .Reply) 
+        will then be passed to whichever hosting view controller that implements the loadMoreTweets method
+     ====================================================================================================== */
+    func loadMoreTweets(mode: TwitterClient.LoadingMode) {
+        hostingVC.loadMoreTweets(mode: mode)
+    }
+    /* ==================================================================================================== */
+    
+    
+    /* ====================================================================================================
+        MARK: - UITableViewDataSource and UITableViewDelegate protocol methods
+     ====================================================================================================== */
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if let cell = tableView.dequeueReusableCell(withIdentifier: "TweetCell", for: indexPath) as? TweetCell {
@@ -41,11 +84,36 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tweets.count
     }
-
-    func loadMoreTweets(mode: TwitterClient.LoadingMode) {
-        hostingVC.loadMoreTimelineTweets(mode: mode)
-    }
+    /* ==================================================================================================== */
     
+    
+    /* ====================================================================================================
+        MARK: - UIScrollViewDelegate protocol methods
+     ====================================================================================================== */
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if (!isMoreDataLoading) {
+            let scrollViewContentHeight = contentSize.height
+            let scrollOffsetThreshold = scrollViewContentHeight - bounds.size.height
+            
+            if(scrollView.contentOffset.y > scrollOffsetThreshold && isDragging) {
+                isMoreDataLoading = true
+                
+                let frame = CGRect(x: 0, y: contentSize.height, width: bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+                loadingMoreView?.frame = frame
+                loadingMoreView!.startAnimating()
+                
+                loadMoreTweets(mode: .EarlierTweets)
+            }
+        }
+    }
+    /* ==================================================================================================== */
+    
+ 
+    /* ====================================================================================================
+        MARK: - Private methods
+     ====================================================================================================== */
+    
+    // MARK: Configure cell UI
     private func configureUI(cell: TweetCell, indexPath: IndexPath) {
         
         let tweet = tweets[indexPath.row]
@@ -81,7 +149,7 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         cell.determineRetweetStatusAndUpdateUI()
         
         cell.replyButtonClosure = {
-            let delegate = MessageViewDelegate(tableView: self, tweet: tweet)
+            let delegate = MessageViewDelegate(tableViewToBeReloadedUponCompletion: self, tweetInReplyTo: tweet)
             delegate.present(mode: .Reply)
         }
         
@@ -89,7 +157,5 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
             cell.configureFavoriteButton(favorited: favorited)
         }
     }
-    
-    
-
+    /* ==================================================================================================== */
 }

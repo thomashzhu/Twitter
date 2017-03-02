@@ -9,40 +9,30 @@
 import UIKit
 import pop
 
-class TweetsViewController: UIViewController, UIScrollViewDelegate, UIViewControllerTransitioningDelegate, ReloadableTweetTableViewProtocol {
+class TweetsViewController: UIViewController, UIViewControllerTransitioningDelegate, ReloadableTweetTableViewProtocol {
     
     @IBOutlet weak var tableView: TweetTableView!
     
     private(set) var messageViewDelegate: MessageViewDelegate!
     
-    private let refreshControl = UIRefreshControl()
     
-    private var isMoreDataLoading = false
-    private var loadingMoreView: InfiniteScrollActivityView?
+    /* ====================================================================================================
+        MARK: - Lifecycle methods
+     ====================================================================================================== */
     
+    // Set up the TweetTableView and loads tweets
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.tableView.hostingVC = self
         self.tableView.tweets = [Tweet]()
         
-        // Set up Pull-to-refresh view
-        refreshControl.addTarget(self, action: #selector(self.loadMoreTimelineTweets(mode:)), for: .valueChanged)
-        tableView.insertSubview(refreshControl, at: 0)
+        self.tableView.estimatedRowHeight = 150
         
-        // Set up Infinite Scroll loading indicator
-        let frame = CGRect(x: 0, y: tableView.contentSize.height, width: tableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
-        loadingMoreView = InfiniteScrollActivityView(frame: frame)
-        loadingMoreView!.isHidden = true
-        tableView.addSubview(loadingMoreView!)
-        
-        var insets = tableView.contentInset
-        insets.bottom += InfiniteScrollActivityView.defaultHeight
-        tableView.contentInset = insets
-        
-        loadMoreTimelineTweets(mode: .EarlierTweets)
+        loadMoreTweets(mode: .EarlierTweets)
     }
     
+    // Configure UI of the navigation bar
     override func viewDidAppear(_ animated: Bool) {
         
         if let navigationBar = navigationController?.navigationBar {
@@ -65,18 +55,24 @@ class TweetsViewController: UIViewController, UIScrollViewDelegate, UIViewContro
             )
         }
     }
+    /* ==================================================================================================== */
     
-    func loadMoreTimelineTweets(mode: TwitterClient.LoadingMode) {
+    
+    /* ====================================================================================================
+        MARK: - ReloadableTweetTableViewProtocol protocol method
+        DESCRIPTION: Load tweets based on modes - Refresh (scrolling up) or Earlier (scrolling down)
+     ====================================================================================================== */
+    func loadMoreTweets(mode: TwitterClient.LoadingMode) {
         TwitterClient.shared?.homeTimeline(
             mode: mode,
             success: { (tweets) in
-                self.isMoreDataLoading = false
-                self.loadingMoreView!.stopAnimating()
+                self.tableView.isMoreDataLoading = false
+                self.tableView.loadingMoreView!.stopAnimating()
 
                 switch mode {
                 case .RefreshTweets:
                     self.tableView.tweets.insert(contentsOf: tweets, at: 0)
-                    self.refreshControl.endRefreshing()
+                    self.tableView.tableViewRefreshControl.endRefreshing()
                 case .EarlierTweets:
                     self.tableView.tweets.append(contentsOf: tweets)
                 }
@@ -86,30 +82,19 @@ class TweetsViewController: UIViewController, UIScrollViewDelegate, UIViewContro
                 print(error.localizedDescription)}
         )
     }
+    /* ==================================================================================================== */
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if (!isMoreDataLoading) {
-            let scrollViewContentHeight = tableView.contentSize.height
-            let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
-            
-            if(scrollView.contentOffset.y > scrollOffsetThreshold && tableView.isDragging) {
-                isMoreDataLoading = true
-                
-                let frame = CGRect(x: 0, y: tableView.contentSize.height, width: tableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
-                loadingMoreView?.frame = frame
-                loadingMoreView!.startAnimating()
-                
-                loadMoreTimelineTweets(mode: .EarlierTweets)
-            }
-        }
-    }
     
+    /* ====================================================================================================
+     MARK: - IBActions
+     ====================================================================================================== */
     @IBAction func onLogoutButton(_ sender: AnyObject) {
         TwitterClient.shared?.logout()
     }
     
     @IBAction func newMessagePressed(_ sender: AnyObject) {
-        messageViewDelegate = MessageViewDelegate(tableView: tableView, tweet: nil)
+        messageViewDelegate = MessageViewDelegate(tableViewToBeReloadedUponCompletion: tableView, tweetInReplyTo: nil)
         messageViewDelegate.present(mode: .New)
     }
+    /* ==================================================================================================== */
 }

@@ -10,13 +10,6 @@ import UIKit
 import BDBOAuth1Manager
 
 class LoginViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-    }
-
     @IBAction func onLoginButton(_ sender: AnyObject) {
         if let client = TwitterClient.shared {
             client.login(
