@@ -9,7 +9,7 @@
 import UIKit
 import pop
 
-class TweetsViewController: UIViewController, UIScrollViewDelegate, UIViewControllerTransitioningDelegate {
+class TweetsViewController: UIViewController, UIScrollViewDelegate, UIViewControllerTransitioningDelegate, ReloadableTweetTableViewProtocol {
     
     private(set) var tableView: TweetTableView!
     private(set) var tweets = [Tweet]()
@@ -152,15 +152,5 @@ class TweetsViewController: UIViewController, UIScrollViewDelegate, UIViewContro
                 }
             }
         }
-    }
-    
-    // MARK: - Facebook Pop
-    
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return PresentingAnimationController()
-    }
-    
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return DismissingAnimationController()
     }
 }
