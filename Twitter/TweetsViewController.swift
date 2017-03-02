@@ -11,8 +11,10 @@ import pop
 
 class TweetsViewController: UIViewController, UIScrollViewDelegate, UIViewControllerTransitioningDelegate, ReloadableTweetTableViewProtocol {
     
-    private(set) var tableView: TweetTableView!
+    private(set) var tableView = TweetTableView()
     private(set) var tweets = [Tweet]()
+    
+    private(set) var messageViewDelegate: MessageViewDelegate!
     
     private let refreshControl = UIRefreshControl()
     
@@ -22,13 +24,6 @@ class TweetsViewController: UIViewController, UIScrollViewDelegate, UIViewContro
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let notification = Notification.Name(rawValue: "replyButtonPressed")
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.replyButtonPressed),
-                                               name: notification,
-                                               object: nil)
-        
-        self.tableView = TweetTableView()
         tableView.tweets = tweets
         
         // Set up Pull-to-refresh view
@@ -113,44 +108,8 @@ class TweetsViewController: UIViewController, UIScrollViewDelegate, UIViewContro
         TwitterClient.shared?.logout()
     }
     
-    func replyButtonPressed(notification: Notification) {
-        if let tweet = notification.userInfo?["tweet"] as? Tweet {
-            performSegue(withIdentifier: "MessageViewController_REPLY", sender: tweet)
-        }
-    }
-    
     @IBAction func newMessagePressed(_ sender: AnyObject) {
-        performSegue(withIdentifier: "MessageViewController_NEW", sender: nil)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        let callback: (Bool) -> Void = { successful in
-            if successful {
-                self.loadMoreTimelineTweets(mode: .RefreshTweets)
-            }
-        }
-        
-        if let identifier = segue.identifier {
-            if identifier == "MessageViewController_NEW" {
-                if let newMessageVC = segue.destination as? MessageViewController {
-                    newMessageVC.transitioningDelegate = self
-                    newMessageVC.modalPresentationStyle = .custom
-                    newMessageVC.updateMode = .New
-                    newMessageVC.callback = callback
-                }
-            } else if identifier == "MessageViewController_REPLY" {
-                if let replyMessageVC = segue.destination as? MessageViewController {
-                    replyMessageVC.transitioningDelegate = self
-                    replyMessageVC.modalPresentationStyle = .custom
-                    if let tweet = sender as? Tweet {
-                        if let id = tweet.id, let screenName = tweet.screenName {
-                            replyMessageVC.updateMode = .Reply(id, screenName)
-                            replyMessageVC.callback = callback
-                        }
-                    }
-                }
-            }
-        }
+        messageViewDelegate = MessageViewDelegate(vc: self, tweet: nil)
+        messageViewDelegate.present(mode: .New)
     }
 }

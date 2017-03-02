@@ -12,12 +12,12 @@ protocol ReloadableTweetTableViewProtocol {
     func loadMoreTimelineTweets(mode: TwitterClient.LoadingMode)
 }
 
-class TweetComposePaneDelegate: NSObject, UIViewControllerTransitioningDelegate {
+class MessageViewDelegate: NSObject, UIViewControllerTransitioningDelegate {
     
     private let vc: ReloadableTweetTableViewProtocol
-    private let tweet: Tweet
+    private let tweet: Tweet?
     
-    init(vc: ReloadableTweetTableViewProtocol, tweet: Tweet) {
+    init(vc: ReloadableTweetTableViewProtocol, tweet: Tweet?) {
         self.vc = vc
         self.tweet = tweet
     }
@@ -26,7 +26,7 @@ class TweetComposePaneDelegate: NSObject, UIViewControllerTransitioningDelegate 
         case New, Reply
     }
     
-    func present(mode: TweetComposePaneDelegate.Mode) {
+    func present(mode: MessageViewDelegate.Mode) {
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let messageVC = storyboard.instantiateViewController(withIdentifier: "MessageViewController") as? MessageViewController {
@@ -47,9 +47,11 @@ class TweetComposePaneDelegate: NSObject, UIViewControllerTransitioningDelegate 
             case .Reply:
                 messageVC.transitioningDelegate = self
                 messageVC.modalPresentationStyle = .custom
-                if let id = tweet.id, let screenName = tweet.screenName {
-                    messageVC.updateMode = .Reply(id, screenName)
-                    messageVC.callback = callback
+                if let tweet = tweet {
+                    if let id = tweet.id, let screenName = tweet.screenName {
+                        messageVC.updateMode = .Reply(id, screenName)
+                        messageVC.callback = callback
+                    }
                 }
             }
         }

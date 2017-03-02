@@ -35,6 +35,7 @@ class TweetCell: UITableViewCell {
     var tweet: Tweet!
     
     var cellHeightAdjustmentClosure: ((Void) -> Void)?
+    var replyButtonClosure: ((Void) -> Void)?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -46,8 +47,9 @@ class TweetCell: UITableViewCell {
     // MARK: - IBActions
     
     @IBAction func replyButtonTapped(_ sender: AnyObject) {
-        let notification = Notification.Name(rawValue: "replyButtonPressed")
-        NotificationCenter.default.post(name: notification, object: nil, userInfo: ["tweet": tweet])
+        if let replyButtonClosure = replyButtonClosure {
+            replyButtonClosure()
+        }
     }
     
     @IBAction func retweetButtonTapped(_ sender: AnyObject) {

@@ -10,6 +10,7 @@ import UIKit
 
 class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     
+    var hostingVC: ReloadableTweetTableViewProtocol!
     var tweets: [Tweet]!
     
     override func awakeFromNib() {
@@ -71,6 +72,11 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate {
             self.reloadRows(at: [indexPath], with: .none)
         }
         cell.determineRetweetStatusAndUpdateUI()
+        
+        cell.replyButtonClosure = {
+            let delegate = MessageViewDelegate(vc: self.hostingVC, tweet: tweet)
+            delegate.present(mode: .Reply)
+        }
         
         if let favorited = tweet.favorited {
             cell.configureFavoriteButton(favorited: favorited)
