@@ -9,13 +9,12 @@
 import UIKit
 import pop
 
-class TweetsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, UIViewControllerTransitioningDelegate {
+class TweetsViewController: UIViewController, UIScrollViewDelegate, UIViewControllerTransitioningDelegate {
     
-    @IBOutlet weak var tableView: UITableView!
+    private(set) var tableView: TweetTableView!
+    private(set) var tweets = [Tweet]()
     
     private let refreshControl = UIRefreshControl()
-    
-    private(set) var tweets = [Tweet]()
     
     private var isMoreDataLoading = false
     private var loadingMoreView: InfiniteScrollActivityView?
@@ -29,12 +28,8 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
                                                name: notification,
                                                object: nil)
         
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.estimatedRowHeight = 150
-        
-        let nib = UINib(nibName: "TweetCell", bundle: nil)
-        tableView.register(nib, forCellReuseIdentifier: "TweetCell")
+        self.tableView = TweetTableView()
+        tableView.tweets = tweets
         
         // Set up Pull-to-refresh view
         refreshControl.addTarget(self, action: #selector(self.loadMoreTimelineTweets(mode:)), for: .valueChanged)
@@ -114,20 +109,6 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "TweetCell", for: indexPath) as? TweetCell {
-            configureUI(cell: cell, indexPath: indexPath)
-            return cell
-        }
-        
-        return UITableViewCell()
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tweets.count
-    }
-    
     @IBAction func onLogoutButton(_ sender: AnyObject) {
         TwitterClient.shared?.logout()
     }
@@ -170,46 +151,6 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
                     }
                 }
             }
-        }
-    }
-    
-    private func configureUI(cell: TweetCell, indexPath: IndexPath) {
-        
-        let tweet = tweets[indexPath.row]
-        
-        cell.tweet = tweet
-        
-        // If the network is slow, it might take a while to load a retweeted user's name, so UI changes might
-        // be delayed. For the following if block, it decides whether to show or hide the retweet status view 
-        // right away, WITHOUT waiting for a retweet user's name to be returned.
-        if tweet.retweetCount > 0 {
-            cell.retweetedByLabel.text = "..."
-            cell.retweetStatusView.isHidden = false
-        } else {
-            cell.retweetStatusView.isHidden = true
-        }
-        
-        if let url = tweet.profileImageURL {
-            cell.profileImageView.setImageWith(url)
-        }
-        
-        cell.usernameLabel.text = tweet.name
-        
-        cell.screenNameLabel.text = tweet.screenName
-        
-        if let timestamp = tweet.timestamp {
-            cell.timestampLabel.text = TwitterClient.tweetTimeFormatted(timestamp: timestamp)
-        }
-        
-        cell.tweetLabel.text = tweet.text
-        
-        cell.cellHeightAdjustmentClosure = {
-            self.tableView.reloadRows(at: [indexPath], with: .none)
-        }
-        cell.determineRetweetStatusAndUpdateUI()
-        
-        if let favorited = tweet.favorited {
-            cell.configureFavoriteButton(favorited: favorited)
         }
     }
     
