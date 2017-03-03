@@ -96,7 +96,7 @@ class UserProfileViewController: UIViewController, ReloadableTweetTableViewProto
     
     
     /* ====================================================================================================
-        MARK: - ReloadableTweetTableViewProtocol protocol method
+        MARK: - ReloadableTweetTableViewProtocol protocol methods
         DESCRIPTION: Load tweets based on modes - Refresh (scrolling up) or Earlier (scrolling down)
      ====================================================================================================== */
     func loadMoreTweets(mode: TwitterClient.LoadingMode) {
@@ -104,6 +104,13 @@ class UserProfileViewController: UIViewController, ReloadableTweetTableViewProto
                                            success: { tweets in
                                             self.tableView.isMoreDataLoading = false
                                             self.tableView.loadingMoreView!.stopAnimating()
+                                            
+                                            switch mode {
+                                            case .RefreshTweets:
+                                                self.tableView.tableViewRefreshControl.endRefreshing()
+                                            case .EarlierTweets:
+                                                break
+                                            }
                                             
                                             self.tableView.tweets = tweets
                                             self.tableView.reloadData() },

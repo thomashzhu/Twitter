@@ -61,7 +61,7 @@ class TweetsViewController: UIViewController, UIViewControllerTransitioningDeleg
     
     
     /* ====================================================================================================
-        MARK: - ReloadableTweetTableViewProtocol protocol method
+        MARK: - ReloadableTweetTableViewProtocol protocol methods
         DESCRIPTION: Load tweets based on modes - Refresh (scrolling up) or Earlier (scrolling down)
      ====================================================================================================== */
     func loadMoreTweets(mode: TwitterClient.LoadingMode) {
