@@ -24,6 +24,7 @@ class User: NSObject {
     
     // User lookup
     let profileBackgroundImageUrl: String?
+    let userDescription: String?
     let tweetCount: Int?
     let followingCount: Int?
     let followerCount: Int?
@@ -46,6 +47,7 @@ class User: NSObject {
         
         // User lookup
         profileBackgroundImageUrl = dictionary["profile_background_image_url_https"] as? String
+        userDescription = dictionary["description"] as? String
         tweetCount = dictionary["statuses_count"] as? Int
         followingCount = dictionary["friends_count"] as? Int
         followerCount = dictionary["followers_count"] as? Int
