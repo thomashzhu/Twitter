@@ -35,6 +35,10 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, U
         self.dataSource = self
         self.delegate = self
         
+        // TableView height adjustment
+        self.rowHeight = UITableViewAutomaticDimension
+        self.estimatedRowHeight = 44.0
+        
         // Associate TweetCell xib to this table view
         let nib = UINib(nibName: "TweetCell", bundle: nil)
         self.register(nib, forCellReuseIdentifier: "TweetCell")
@@ -82,7 +86,7 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, U
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tweets.count
+        return tweets?.count ?? 0
     }
     /* ==================================================================================================== */
     
@@ -132,6 +136,7 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, U
         if let url = tweet.profileImageURL {
             tweetView.profileImageView.setImageWith(url)
         }
+        tweetView.profileImageView.userId = tweet.userId
         
         tweetView.usernameLabel.text = tweet.name
         
@@ -168,7 +173,7 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, U
     
     
     /* ====================================================================================================
-     MARK: - Segue methods
+        MARK: - Segue methods
      ====================================================================================================== */
     
     // Segue to TweetDetailViewController

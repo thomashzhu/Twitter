@@ -35,6 +35,9 @@ class Tweet: NSObject {
     var tweetDetail: [String: AnyObject]?
     var retweetId: String?
     
+    // User Profile
+    var userId: String?
+    
     init(dictionary: [String: AnyObject]) {
         
         self.dictionary = dictionary
@@ -73,6 +76,8 @@ class Tweet: NSObject {
         self.favoritesCount = (dictionary["favorite_count"] as? Int) ?? 0
         
         self.favorited = dictionary["favorited"] as? Bool
+        
+        self.userId = dictionary["user"]?["id_str"] as? String
         
         retweetInfoUnretrievable = false
     }

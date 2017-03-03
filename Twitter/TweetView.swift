@@ -14,7 +14,7 @@ class TweetView: UIStackView {
     @IBOutlet weak var retweetStatusView: UIStackView!
     @IBOutlet weak var retweetedByLabel: UILabel!
     
-    @IBOutlet weak var profileImageView: UIImageView!
+    @IBOutlet weak var profileImageView: UserProfileImageView!
     
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var screenNameLabel: UILabel!
@@ -34,14 +34,6 @@ class TweetView: UIStackView {
     
     var cellHeightAdjustmentClosure: ((Void) -> Void)?
     var replyButtonClosure: ((Void) -> Void)?
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-        profileImageView.layer.cornerRadius = 5.0
-        profileImageView.clipsToBounds = true
-    }
-    
     
     /* ====================================================================================================
         MARK: - IBActions

@@ -104,6 +104,38 @@ class TwitterClient: BDBOAuth1SessionManager {
         })
     }
     
+    func userLookup(userId: String, success: @escaping (User) -> Void, failure: @escaping (Error) -> Void) {
+        get("1.1/users/lookup.json",
+            parameters: ["user_id": userId],
+            progress: nil,
+            success: { (_, response: Any?) in
+                if let userDictionaries = response as? [[String: AnyObject]] {
+                    if let dictionary = userDictionaries.first {
+                        let user = User(dictionary: dictionary)
+                        success(user)
+                    }
+                }
+        },
+            failure: { (_, error: Error) in
+                failure(error)
+        })
+    }
+    
+    func userTimeline(userId: String, success: @escaping ([Tweet]) -> Void, failure: @escaping (Error) -> Void) {
+        get("1.1/statuses/user_timeline.json",
+            parameters: ["user_id": userId],
+            progress: nil,
+            success: { (_, response: Any?) in
+                if let dictionaries = response as? [[String: AnyObject]] {
+                    let tweets = Tweet.tweetsWithArray(dictionaries: dictionaries)
+                    success(tweets)
+                }
+        },
+            failure: { (_, error: Error) in
+                failure(error)
+        })
+    }
+    
     enum UpdateMode {
         case New
         case Reply(String, String)

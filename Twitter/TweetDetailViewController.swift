@@ -47,6 +47,7 @@ class TweetDetailViewController: UIViewController {
         }
         
         tweetView.profileImageView.image = cell.tweetView.profileImageView.image
+        tweetView.profileImageView.userId = cell.tweetView.tweet.userId
         
         tweetView.usernameLabel.text = cell.tweetView.usernameLabel.text
         tweetView.screenNameLabel.text = cell.tweetView.screenNameLabel.text

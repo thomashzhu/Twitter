@@ -59,7 +59,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="R0u-UV-ExP" userLabel="Profile">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="102"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xN6-ta-qTQ" userLabel="Profile Image View">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xN6-ta-qTQ" userLabel="Profile Image View" customClass="UserProfileImageView" customModule="Twitter" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="50" id="Uh4-bU-wu8"/>
@@ -75,13 +75,13 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="402" height="18"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="__USERNAME__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="552-3a-EwK">
-                                                        <rect key="frame" x="0.0" y="0.0" width="98" height="18"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="97.5" height="18"/>
                                                         <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="13"/>
                                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="245" verticalHuggingPriority="251" horizontalCompressionResistancePriority="745" text="__SCREEN_NAME__" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.75" translatesAutoresizingMaskIntoConstraints="NO" id="dnv-mY-Hf4">
-                                                        <rect key="frame" x="106" y="0.0" width="190" height="18"/>
+                                                        <rect key="frame" x="105.5" y="0.0" width="190.5" height="18"/>
                                                         <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
                                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                         <nil key="highlightedColor"/>
@@ -176,7 +176,7 @@
                         <connections>
                             <outlet property="favoriteButton" destination="4gi-Qe-AXj" id="Fml-5m-ukl"/>
                             <outlet property="favoriteCountLabel" destination="aKI-sg-DNu" id="CKt-Bj-YAi"/>
-                            <outlet property="profileImageView" destination="xN6-ta-qTQ" id="ydj-nJ-EV3"/>
+                            <outlet property="profileImageView" destination="xN6-ta-qTQ" id="9ZR-Cg-lPP"/>
                             <outlet property="replyButton" destination="OTs-pH-n5h" id="2kb-59-61a"/>
                             <outlet property="retweetButton" destination="hs7-fb-F0L" id="N3V-q0-TPj"/>
                             <outlet property="retweetCountLabel" destination="Exc-lk-kO7" id="Diw-pw-ZNe"/>
