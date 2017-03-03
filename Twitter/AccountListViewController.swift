@@ -92,6 +92,10 @@ class AccountListViewController: UIViewController, UITableViewDataSource, UITabl
     /* ====================================================================================================
         MARK: - IBActions
      ====================================================================================================== */
+    @IBAction func closeButtonPressed(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }
+    
     @IBAction func addButtonPressed(_ sender: Any) {
         addUser()
     }

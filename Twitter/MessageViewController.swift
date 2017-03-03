@@ -16,7 +16,7 @@ class MessageViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var characterCountLabel: UILabel!
     
     var updateMode: TwitterClient.UpdateMode?   // .New or .Reply
-    var callback: ((Bool) -> Void)?             // Code to be called once tweet is done composing
+    var callback: ((Tweet) -> Void)?             // Code to be called once tweet is done composing
     
     private var placeholder: String?
     private var inReplyToScreenName: String?
@@ -90,8 +90,10 @@ class MessageViewController: UIViewController, UITextViewDelegate {
             if let placeholder = placeholder, currentText != placeholder {
                 TwitterClient.shared?.updateStatus(message: inReplyToUserMention + messageTextView.text,
                                      inReplyToStatusId: inReplyToStatusId,
-                                     success: { _ in
-                                        self.dismiss(animated: true) { self.callback?(true) }},
+                                     success: { tweet in
+                                        self.dismiss(animated: true) {
+                                            self.callback?(tweet)
+                                        }},
                                      failure: { (error) in
                                         self.messageTextView.text = currentText
                                         

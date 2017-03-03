@@ -140,7 +140,7 @@ class TwitterClient: BDBOAuth1SessionManager {
         case Reply(String, String)
     }
     
-    func updateStatus(message: String, inReplyToStatusId: String?, success: @escaping (Void) -> (Void), failure: @escaping (Error) -> Void) {
+    func updateStatus(message: String, inReplyToStatusId: String?, success: @escaping (Tweet) -> (Void), failure: @escaping (Error) -> Void) {
         
         let parameters: [String: String] = {
             if let inReplyToStatusId = inReplyToStatusId {
@@ -153,7 +153,11 @@ class TwitterClient: BDBOAuth1SessionManager {
         post("1.1/statuses/update.json",
             parameters: parameters,
             progress: nil,
-            success: { _ in success() },
+            success: { _, response in
+                if let dictionary = response as? [String: AnyObject] {
+                    let tweet = Tweet(dictionary: dictionary)
+                    success(tweet)
+                } },
             failure: { (_, error: Error) in
                 failure(error)
         })

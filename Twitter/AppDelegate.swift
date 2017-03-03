@@ -10,7 +10,7 @@ import UIKit
 import BDBOAuth1Manager
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UIGestureRecognizerDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate {
 
     var window: UIWindow?
 
@@ -71,11 +71,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIGestureRecognizerDelega
         if gesture.state == .began {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             if let vc = storyboard.instantiateViewController(withIdentifier: "AccountListViewController") as? AccountListViewController {
-                if let navigationController = UIApplication.shared.keyWindow?.rootViewController as? UINavigationController {
-                    navigationController.pushViewController(vc, animated: true)
-                }
+                vc.transitioningDelegate = self
+                vc.modalPresentationStyle = .custom
+                
+                let rootVC = UIApplication.shared.keyWindow?.rootViewController
+                rootVC?.present(vc, animated: true, completion: nil)
             }
         }
     }
+    
+    /* ====================================================================================================
+        MARK: - UIViewControllerTransitioningDelegate method with Facebook POP
+     ====================================================================================================== */
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return PresentingAnimationController()
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return DismissingAnimationController()
+    }
+    /* ==================================================================================================== */
 }
 

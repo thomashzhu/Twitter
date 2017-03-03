@@ -38,10 +38,12 @@ class MessageViewDelegate: NSObject, UIViewControllerTransitioningDelegate {
                 this callback will trigger the loadMoreTweets pass-through method, which will eventually
                 be passed to whichever hosting view controller that implements the loadMoreTweets method
              */
-            let callback: (Bool) -> Void = { successful in
-                if successful {
-                    self.tableView?.loadMoreTweets(mode: .RefreshTweets)
+            let callback: (Tweet) -> Void = { tweet in
+                if let idString = tweet.id, let id = Int(idString) {
+                    TwitterClient.shared?.maxTweetId = id
                 }
+                self.tableView?.tweets.insert(tweet, at: 0)
+                self.tableView?.reloadData()
             }
             
             messageVC.transitioningDelegate = self

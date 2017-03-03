@@ -24,6 +24,10 @@ class UserProfileViewController: UIViewController, ReloadableTweetTableViewProto
     
     @IBOutlet weak var tableView: TweetTableView!
     
+    
+    /* ====================================================================================================
+        MARK: - Lifecycle methods
+     ====================================================================================================== */
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -50,7 +54,8 @@ class UserProfileViewController: UIViewController, ReloadableTweetTableViewProto
                                             self.tableView.reloadData() },
                                            failure: { error in print(error.localizedDescription) })
     }
-
+    /* ==================================================================================================== */
+    
     
     /* ====================================================================================================
         MARK: - IBActions
@@ -95,36 +100,19 @@ class UserProfileViewController: UIViewController, ReloadableTweetTableViewProto
         DESCRIPTION: Load tweets based on modes - Refresh (scrolling up) or Earlier (scrolling down)
      ====================================================================================================== */
     func loadMoreTweets(mode: TwitterClient.LoadingMode) {
-        TwitterClient.shared?.homeTimeline(
-            mode: mode,
-            success: { (tweets) in
-                self.tableView.isMoreDataLoading = false
-                self.tableView.loadingMoreView!.stopAnimating()
-                
-                switch mode {
-                case .RefreshTweets:
-                    self.tableView.tweets.insert(contentsOf: tweets, at: 0)
-                    self.tableView.tableViewRefreshControl.endRefreshing()
-                case .EarlierTweets:
-                    self.tableView.tweets.append(contentsOf: tweets)
-                }
-                
-                self.tableView.reloadData()},
-            failure: { (error) in
-                print(error.localizedDescription)}
+        TwitterClient.shared?.userTimeline(userId: userId,
+                                           success: { tweets in
+                                            self.tableView.isMoreDataLoading = false
+                                            self.tableView.loadingMoreView!.stopAnimating()
+                                            
+                                            self.tableView.tweets = tweets
+                                            self.tableView.reloadData() },
+                                           failure: { error in print(error.localizedDescription) }
         )
     }
     
     func reloadUponUserChanged(user: User?) {
-        if !User.isCurrentUser(user: presentingUser) {
-            self.tableView.tweets = []
-            
-            TwitterClient.shared?.minTweetId = nil
-            TwitterClient.shared?.maxTweetId = nil
-            loadMoreTweets(mode: .EarlierTweets)
-            
-            presentingUser = User.currentUser
-        }
+        // No action needed (since it's user specific)
     }
     /* ==================================================================================================== */
 }
