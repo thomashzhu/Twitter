@@ -50,18 +50,15 @@ class UserProfileViewController: UIViewController, ReloadableTweetTableViewProto
         let client = TwitterClient.shared
         
         client?.userLookup(userId: userId,
-                                         success: { user in
-                                            self.configureUserStats(user: user)
-        },
-                                         failure: {
-                                            error in print(error.localizedDescription)
-        })
+                           success: { user in self.configureUserStats(user: user) },
+                           failure: { error in print(error.localizedDescription) }
+        )
         
         client?.userTimeline(userId: userId,
-                                           success: { tweets in
-                                            self.tableView.tweets = tweets
-                                            self.tableView.reloadData() },
-                                           failure: { error in print(error.localizedDescription) })
+                             success: { tweets in
+                                self.tableView.tweets = tweets
+                                self.tableView.reloadData() },
+                             failure: { error in print(error.localizedDescription) })
         
         
         let pan = UIPanGestureRecognizer(target: self, action: #selector(self.pan(gestureRecognizer:)))
@@ -109,7 +106,11 @@ class UserProfileViewController: UIViewController, ReloadableTweetTableViewProto
         usernameLabel.text = user.name
         screenNameLabel.text = user.screenName
         
-        descriptionLabel.text = user.userDescription
+        if let userDescription = user.userDescription, !userDescription.isEmpty {
+            descriptionLabel.text = userDescription
+        } else {
+            descriptionLabel.text = "Nothing yet..."
+        }
         
         tweetCountLabel.text = "\(user.tweetCount ?? 0)"
         followingCountLabel.text = "\(user.followingCount ?? 0)"

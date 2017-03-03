@@ -75,8 +75,12 @@ class AccountListViewController: UIViewController, UITableViewDataSource, UITabl
         User.currentUser = users[indexPath.row]
         if User.loadAccessToken() {
             TwitterClient.shared?.currentAccount(
-                success: { _ in
-                    _ = self.navigationController?.popToRootViewController(animated: true) },
+                success: { _ in self.dismiss(animated: true) {
+                    if let navigationVC = UIApplication.shared.keyWindow?.rootViewController as? UINavigationController {
+                        if let topVC = navigationVC.topViewController as? ReloadableTweetTableViewProtocol {
+                            topVC.reloadUponUserChanged(user: User.currentUser)
+                        }
+                    }}},
                 failure: { error in
                     return print(error.localizedDescription) }
             )

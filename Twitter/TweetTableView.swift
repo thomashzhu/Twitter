@@ -166,6 +166,10 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, U
             delegate.present(mode: .Reply)
         }
         
+        tweetView.retweetButtonClosure = {
+            self.hostingVC.loadMoreTweets(mode: .RefreshTweets)
+        }
+        
         if let favorited = tweet.favorited {
             tweetView.configureFavoriteButton(favorited: favorited)
         }
@@ -190,14 +194,7 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, U
                     
                     if let navigationController = UIApplication.shared.keyWindow?.rootViewController as? UINavigationController {
                         vc.completionBlock = { tweetView in
-                            cell.tweetView.retweetStatusView.isHidden = tweetView.retweetStatusView.isHidden
-                            cell.tweetView.retweetedByLabel.text = tweetView.retweetedByLabel.text
-                            
-                            cell.tweetView.retweetButton.setImage(tweetView.retweetButton.image(for: .normal), for: .normal)
-                            cell.tweetView.retweetCountLabel.text = tweetView.retweetCountLabel.text
-                            
-                            cell.tweetView.favoriteButton.setImage(tweetView.favoriteButton.image(for: .normal), for: .normal)
-                            cell.tweetView.favoriteCountLabel.text = tweetView.favoriteCountLabel.text
+                            self.reloadRows(at: [indexPath], with: .automatic)
                         }
                         navigationController.pushViewController(vc, animated: true)
                     }

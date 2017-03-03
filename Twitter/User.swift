@@ -129,8 +129,8 @@ class User: NSObject {
     
     class func isCurrentUser(user: User?) -> Bool {
         if let currentUser = User.currentUser, let user = user {
-            if let currentUserUUID = currentUser.uuid, let userUUID = user.uuid {
-                if currentUserUUID == userUUID {
+            if let currentUserScreenName = currentUser.screenName, let userScreenName = user.screenName {
+                if currentUserScreenName == userScreenName {
                     return true
                 }
             }

@@ -34,6 +34,7 @@ class TweetView: UIStackView {
     
     var cellHeightAdjustmentClosure: ((Void) -> Void)?
     var replyButtonClosure: ((Void) -> Void)?
+    var retweetButtonClosure: ((Void) -> Void)?
     
     /* ====================================================================================================
         MARK: - IBActions
@@ -54,6 +55,7 @@ class TweetView: UIStackView {
                                             DispatchQueue.main.async {
                                                 self.setupRetweetStatView(completion: self.cellHeightAdjustmentClosure)
                                                 self.configureRetweetButton(retweeted: !retweeted)
+                                                self.retweetButtonClosure?()
                                             }},
                                           failure: { (error) in
                                             print(error.localizedDescription)}

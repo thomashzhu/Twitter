@@ -57,14 +57,14 @@ class MessageViewController: UIViewController, UITextViewDelegate {
         
         messageTextView.text = placeholder
         messageTextView.alpha = 0.75
-    
-        characterCountLabel.text = ""
+        
+        displayCharacterLimit(messageTextView)
     }
     /* ==================================================================================================== */
     
     
     /* ====================================================================================================
-     MARK: - IBActions
+        MARK: - IBActions
      ====================================================================================================== */
     @IBAction func closeButtonTapped(_ sender: AnyObject) {
         dismiss(animated: true, completion: nil)
@@ -112,7 +112,7 @@ class MessageViewController: UIViewController, UITextViewDelegate {
     
     
     /* ====================================================================================================
-     MARK: - UITextViewDelegate methods
+        MARK: - UITextViewDelegate methods
      ====================================================================================================== */
     
     // Erase placeholder text once editing begins
@@ -124,7 +124,21 @@ class MessageViewController: UIViewController, UITextViewDelegate {
     
     // Update remaining character count, constantly
     func textViewDidChange(_ textView: UITextView) {
-        let count = textView.text.characters.count
+        displayCharacterLimit(textView)
+    }
+    
+    // Accept text changes as long as it's within the character limit, otherwise deny
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        return !(textView.text.characters.count >= 140 - inReplyToUserMention.characters.count)
+    }
+    /* ==================================================================================================== */
+    
+    
+    /* ====================================================================================================
+        MARK: - Helper method
+     ====================================================================================================== */
+    private func displayCharacterLimit(_ textView: UITextView) {
+        let count = (textView.text == placeholder ? 0 : textView.text.characters.count)
         
         if let updateMode = updateMode {
             switch updateMode {
@@ -135,11 +149,6 @@ class MessageViewController: UIViewController, UITextViewDelegate {
                 characterCountLabel.text = "\(count) out of \(remainingCharacterCount) characters (prefixing \(inReplyToUserMention))"
             }
         }
-    }
-    
-    // Accept text changes as long as it's within the character limit, otherwise deny
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        return !(textView.text.characters.count >= 140 - inReplyToUserMention.characters.count)
     }
     /* ==================================================================================================== */
 }

@@ -33,7 +33,7 @@ class TwitterClient: BDBOAuth1SessionManager {
         switch mode {
         case .RefreshTweets:
             if let maxTweetId = maxTweetId {
-                parameters["since_id"] = maxTweetId
+                parameters["since_id"] = maxTweetId + 1
             }
         case .EarlierTweets:
             if let minTweetId = minTweetId {
@@ -334,19 +334,19 @@ class TwitterClient: BDBOAuth1SessionManager {
     
     static func tweetTimeFormatted(timestamp: Date) -> String {
         
-        let interval = timestamp.timeIntervalSinceNow
+        let interval = abs(timestamp.timeIntervalSinceNow)
         
         if interval < 60 * 60 * 24 {
-            let seconds = -Int(interval.truncatingRemainder(dividingBy: 60))
-            let minutes = -Int((interval / 60).truncatingRemainder(dividingBy: 60))
-            let hours = -Int((interval / 3600))
+            let seconds = Int(interval.truncatingRemainder(dividingBy: 60))
+            let minutes = Int((interval / 60).truncatingRemainder(dividingBy: 60))
+            let hours = Int((interval / 3600))
             
             let result = (hours == 0 ? "" : "\(hours)h ") + (minutes == 0 ? "" : "\(minutes)m ") + (seconds == 0 ? "" : "\(seconds)s")
             return result
         } else {
             let formatter: DateFormatter = {
                 let f = DateFormatter()
-                f.dateFormat = "EEE/MMM/d"
+                f.dateFormat = "MMM d, yyyy"
                 return f
             }()
             return formatter.string(from: timestamp)
