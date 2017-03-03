@@ -27,6 +27,9 @@ class AccountListViewController: UIViewController, UITableViewDataSource, UITabl
         tableView.delegate = self
     }
     
+    /* ====================================================================================================
+        MARK: - UITableViewDataSource and UITableViewDelegate protocol methods
+     ====================================================================================================== */
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "UserCell", for: indexPath)
@@ -34,7 +37,7 @@ class AccountListViewController: UIViewController, UITableViewDataSource, UITabl
         let user = users[indexPath.row]
         
         if User.isCurrentUser(user: user) {
-            cell.textLabel?.text = ">> \(user.screenName ?? "")"
+            cell.textLabel?.text = "\(user.screenName ?? "") (current session)"
         } else {
             cell.textLabel?.text = user.screenName
         }
@@ -71,22 +74,33 @@ class AccountListViewController: UIViewController, UITableViewDataSource, UITabl
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         User.currentUser = users[indexPath.row]
         if User.loadAccessToken() {
-            TwitterClient.shared?.currentAccount(success: { _ in _ = self.navigationController?.popToRootViewController(animated: true) },
-                                                 failure: { error in return print(error.localizedDescription) })
+            TwitterClient.shared?.currentAccount(
+                success: { _ in
+                    _ = self.navigationController?.popToRootViewController(animated: true) },
+                failure: { error in
+                    return print(error.localizedDescription) }
+            )
         }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return users.count
     }
+    /* ==================================================================================================== */
     
+    
+    /* ====================================================================================================
+        MARK: - IBActions
+     ====================================================================================================== */
     @IBAction func addButtonPressed(_ sender: Any) {
         addUser()
-        
-        users = User.users
-        tableView.reloadData()
     }
+    /* ==================================================================================================== */
     
+    
+    /* ====================================================================================================
+        MARK: - Helper methods (add / remove user)
+     ====================================================================================================== */
     private func addUser() {
         if let client = TwitterClient.shared {
             client.login(
@@ -112,4 +126,5 @@ class AccountListViewController: UIViewController, UITableViewDataSource, UITabl
         
         tableView.deleteRows(at: [indexPath], with: .automatic)
     }
+    /* ==================================================================================================== */
 }
