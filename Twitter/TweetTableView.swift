@@ -10,6 +10,7 @@ import UIKit
 
 protocol ReloadableTweetTableViewProtocol {
     func loadMoreTweets(mode: TwitterClient.LoadingMode)
+    func reloadUponUserChanged(user: User?)
 }
 
 class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, UIGestureRecognizerDelegate {

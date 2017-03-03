@@ -14,7 +14,9 @@ class TweetsViewController: UIViewController, UIViewControllerTransitioningDeleg
     @IBOutlet weak var tableView: TweetTableView!
     
     private(set) var messageViewDelegate: MessageViewDelegate!
+    var reloadBlock: ((Tweet) -> Void)!
     
+    private(set) var presentingUser: User?
     
     /* ====================================================================================================
         MARK: - Lifecycle methods
@@ -49,8 +51,11 @@ class TweetsViewController: UIViewController, UIViewControllerTransitioningDeleg
         self.tableView.tweets = [Tweet]()
         
         self.tableView.estimatedRowHeight = 150
-        
-        loadMoreTweets(mode: .EarlierTweets)
+    }
+    
+    // Reload table view, if needed (first time or user changed)
+    override func viewWillAppear(_ animated: Bool) {
+        reloadUponUserChanged(user: presentingUser)
     }
     /* ==================================================================================================== */
     
@@ -78,6 +83,18 @@ class TweetsViewController: UIViewController, UIViewControllerTransitioningDeleg
             failure: { (error) in
                 print(error.localizedDescription)}
         )
+    }
+    
+    func reloadUponUserChanged(user: User?) {
+        if !User.isCurrentUser(user: presentingUser) {
+            self.tableView.tweets = []
+            
+            TwitterClient.shared?.minTweetId = nil
+            TwitterClient.shared?.maxTweetId = nil
+            loadMoreTweets(mode: .EarlierTweets)
+            
+            presentingUser = User.currentUser
+        }
     }
     /* ==================================================================================================== */
     

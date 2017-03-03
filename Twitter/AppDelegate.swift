@@ -10,25 +10,23 @@ import UIKit
 import BDBOAuth1Manager
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UIGestureRecognizerDelegate {
 
     var window: UIWindow?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
-        if let _ = User.currentUser {
-            print("There is a current user")
-            
-            if let twitterClient = TwitterClient.shared {
-                if twitterClient.loadAccessToken() {
-                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                    let vc = storyboard.instantiateViewController(withIdentifier: "TweetsNavigationController")
-                    
-                    window?.rootViewController = vc
-                }
-            }
-        }
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "TweetsNavigationController") as! UINavigationController
+        
+        _ = User.loadAccessToken()
+        
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.presentAccountListViewController(gesture:)))
+        longPressRecognizer.delegate = self
+        vc.navigationBar.addGestureRecognizer(longPressRecognizer)
+        vc.navigationBar.isUserInteractionEnabled = true
+        window?.rootViewController = vc
         
         NotificationCenter.default.addObserver(
             forName: User.userDidLogoutNotification,
@@ -67,6 +65,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
         TwitterClient.shared?.handleOpenUrl(url: url)
         return true
+    }
+    
+    func presentAccountListViewController(gesture: UILongPressGestureRecognizer) {
+        if gesture.state == .began {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            if let vc = storyboard.instantiateViewController(withIdentifier: "AccountListViewController") as? AccountListViewController {
+                if let navigationController = UIApplication.shared.keyWindow?.rootViewController as? UINavigationController {
+                    navigationController.pushViewController(vc, animated: true)
+                }
+            }
+        }
     }
 }
 

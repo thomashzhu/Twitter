@@ -8,7 +8,6 @@
 
 import UIKit
 import BDBOAuth1Manager
-import KeychainAccess
 
 class TwitterClient: BDBOAuth1SessionManager {
     
@@ -190,6 +189,19 @@ class TwitterClient: BDBOAuth1SessionManager {
         deauthorize()
         requestSerializer.removeAccessToken()
         
+        if let currentUser = User.currentUser, let users = User.users {
+            if users.contains(currentUser) {
+                User.users = users.filter { user -> Bool in
+                    if let currentUserUUID = currentUser.uuid, let userUUID = user.uuid {
+                        if currentUserUUID == userUUID {
+                            return false
+                        }
+                    }
+                    return true
+                }
+            }
+        }
+        
         NotificationCenter.default.post(
             name: User.userDidLogoutNotification,
             object: nil
@@ -204,19 +216,11 @@ class TwitterClient: BDBOAuth1SessionManager {
                          method: "POST",
                          requestToken: requestToken,
                          success: { (accessToken: BDBOAuth1Credential?) in
-                            
-                            if let accessToken = accessToken {
-                                let keychain = Keychain(service: TwitterClient.bundleIdenfitier)
-                                if let token = accessToken.token,
-                                    let secret = accessToken.secret {
-                                    keychain["access_token"] = token
-                                    keychain["access_token_secret"] = secret
-                                }
-                            }
-                            
                             self.currentAccount(
                                 success: { (user) in
-                                    User.currentUser = user
+                                    if let accessToken = accessToken {
+                                        User.saveCurrentUser(user: user, accessToken: accessToken)
+                                    }
                                     self.loginSuccess?()},
                                 failure: { (error) in
                                     self.loginFailure?(error)
@@ -229,21 +233,6 @@ class TwitterClient: BDBOAuth1SessionManager {
                                 self.loginFailure?(error)
                             }}
         )
-    }
-    
-    func loadAccessToken() -> Bool {
-        requestSerializer.removeAccessToken()
-        
-        let keychain = Keychain(service: TwitterClient.bundleIdenfitier)
-        if let accessToken = keychain["access_token"],
-            let accessTokenSecret = keychain["access_token_secret"] {
-            
-            let generatedToken = BDBOAuth1Credential(token: accessToken, secret: accessTokenSecret, expiration: nil)
-            requestSerializer.saveAccessToken(generatedToken)
-            
-            return true
-        }
-        return false
     }
     
     enum RetweetMode {

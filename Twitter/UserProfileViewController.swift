@@ -11,6 +11,7 @@ import UIKit
 class UserProfileViewController: UIViewController, ReloadableTweetTableViewProtocol {
 
     var userId: String!
+    private(set) var presentingUser: User?
     
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var userProfileImageView: UIImageView!
@@ -50,12 +51,21 @@ class UserProfileViewController: UIViewController, ReloadableTweetTableViewProto
                                            failure: { error in print(error.localizedDescription) })
     }
 
+    
+    /* ====================================================================================================
+        MARK: - IBActions
+     ====================================================================================================== */
     @IBAction func newMessagePressed(_ sender: Any) {
         let messageViewDelegate = MessageViewDelegate(tableViewToBeReloadedUponCompletion: tableView, tweetInReplyTo: nil)
         messageViewDelegate.present(mode: .New)
     }
+    /* ==================================================================================================== */
     
     
+    
+    /* ====================================================================================================
+        MARK: - Configure user stats using information returned from the user lookup API call
+     ====================================================================================================== */
     private func configureUserStats(user: User) {
         if let urlString = user.profileBackgroundImageUrl, let url = URL(string: urlString) {
             backgroundImageView.setImageWith(url)
@@ -71,17 +81,18 @@ class UserProfileViewController: UIViewController, ReloadableTweetTableViewProto
         followingCountLabel.text = "\(user.followingCount ?? 0)"
         followerCountCountLabel.text = "\(user.followerCount ?? 0)"
         
-        if let currentUseName = User.currentUser?.name, user.name == currentUseName {
+        if User.isCurrentUser(user: user) {
             navigationItem.title = "Me"
         } else {
             navigationItem.title = user.name
         }
     }
+    /* ==================================================================================================== */
     
     
     /* ====================================================================================================
-     MARK: - ReloadableTweetTableViewProtocol protocol method
-     DESCRIPTION: Load tweets based on modes - Refresh (scrolling up) or Earlier (scrolling down)
+        MARK: - ReloadableTweetTableViewProtocol protocol method
+        DESCRIPTION: Load tweets based on modes - Refresh (scrolling up) or Earlier (scrolling down)
      ====================================================================================================== */
     func loadMoreTweets(mode: TwitterClient.LoadingMode) {
         TwitterClient.shared?.homeTimeline(
@@ -102,6 +113,18 @@ class UserProfileViewController: UIViewController, ReloadableTweetTableViewProto
             failure: { (error) in
                 print(error.localizedDescription)}
         )
+    }
+    
+    func reloadUponUserChanged(user: User?) {
+        if !User.isCurrentUser(user: presentingUser) {
+            self.tableView.tweets = []
+            
+            TwitterClient.shared?.minTweetId = nil
+            TwitterClient.shared?.maxTweetId = nil
+            loadMoreTweets(mode: .EarlierTweets)
+            
+            presentingUser = User.currentUser
+        }
     }
     /* ==================================================================================================== */
 }

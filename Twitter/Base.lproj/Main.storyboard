@@ -670,6 +670,57 @@
             </objects>
             <point key="canvasLocation" x="1454" y="832"/>
         </scene>
+        <!--Users-->
+        <scene sceneID="CQ0-s5-d13">
+            <objects>
+                <viewController storyboardIdentifier="AccountListViewController" id="KJp-0t-cFr" customClass="AccountListViewController" customModule="Twitter" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="aPD-gG-3U2"/>
+                        <viewControllerLayoutGuide type="bottom" id="Acn-9T-UVL"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="z14-De-IeN">
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="RAW-eE-bvS">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="UserCell" id="DjC-pM-u7E">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DjC-pM-u7E" id="gZp-nk-NDi">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Acn-9T-UVL" firstAttribute="top" secondItem="RAW-eE-bvS" secondAttribute="bottom" id="EBX-YY-mUC"/>
+                            <constraint firstAttribute="trailing" secondItem="RAW-eE-bvS" secondAttribute="trailing" id="Jmv-dl-Ffz"/>
+                            <constraint firstItem="RAW-eE-bvS" firstAttribute="top" secondItem="aPD-gG-3U2" secondAttribute="bottom" id="KyU-DD-DgB"/>
+                            <constraint firstItem="RAW-eE-bvS" firstAttribute="leading" secondItem="z14-De-IeN" secondAttribute="leading" id="bsX-Rg-0lO"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Users" id="VAU-GA-gHB">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="fcD-YN-xYh">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="addButtonPressed:" destination="KJp-0t-cFr" id="r9O-tk-mTL"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="tableView" destination="RAW-eE-bvS" id="mi0-yD-1sC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cY0-wd-SdN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1454" y="-582"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="uha-qu-WFw">
             <objects>
@@ -686,6 +737,7 @@
                     <nil name="viewControllers"/>
                     <connections>
                         <segue destination="f55-aP-ULS" kind="relationship" relationship="rootViewController" id="V2K-Tu-zZ4"/>
+                        <segue destination="KJp-0t-cFr" kind="show" identifier="AccountListViewController" id="aSO-la-7uT"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wiM-Aj-RZa" userLabel="First Responder" sceneMemberID="firstResponder"/>
