@@ -13,6 +13,7 @@ class TweetDetailViewController: UIViewController {
     @IBOutlet weak var tweetView: TweetView!
     
     var cell: TweetCell!
+    var setUpTweetViewClosures: ((TweetView) -> Void)!
     var completionBlock: ((TweetView) -> Void)!
     
     /* ====================================================================================================
@@ -25,6 +26,7 @@ class TweetDetailViewController: UIViewController {
         navigationItem.title = "Tweet"
         
         configureView()
+        setUpTweetViewClosures(tweetView)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

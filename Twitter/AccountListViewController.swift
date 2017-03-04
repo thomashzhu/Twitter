@@ -16,6 +16,10 @@ class AccountListViewController: UIViewController, UITableViewDataSource, UITabl
     var users: [User]!
     private(set) var inEditingMode = false
     
+    
+    /* ====================================================================================================
+        MARK: - Lifecycle Methods
+     ====================================================================================================== */
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,6 +30,18 @@ class AccountListViewController: UIViewController, UITableViewDataSource, UITabl
         tableView.dataSource = self
         tableView.delegate = self
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        if let navigationVC = UIApplication.shared.keyWindow?.rootViewController as? UINavigationController {
+            if let topVC = navigationVC.topViewController as? ReloadableTweetTableViewProtocol {
+                topVC.reloadUponUserChanged(user: User.currentUser)
+            }
+        }
+    }
+    /* ==================================================================================================== */
+    
     
     /* ====================================================================================================
         MARK: - UITableViewDataSource and UITableViewDelegate protocol methods
@@ -75,12 +91,7 @@ class AccountListViewController: UIViewController, UITableViewDataSource, UITabl
         User.currentUser = users[indexPath.row]
         if User.loadAccessToken() {
             TwitterClient.shared?.currentAccount(
-                success: { _ in self.dismiss(animated: true) {
-                    if let navigationVC = UIApplication.shared.keyWindow?.rootViewController as? UINavigationController {
-                        if let topVC = navigationVC.topViewController as? ReloadableTweetTableViewProtocol {
-                            topVC.reloadUponUserChanged(user: User.currentUser)
-                        }
-                    }}},
+                success: { _ in self.dismiss(animated: true, completion: nil) },
                 failure: { error in
                     return print(error.localizedDescription) }
             )

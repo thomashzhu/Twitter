@@ -161,14 +161,7 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, U
         }
         tweetView.determineRetweetStatusAndUpdateUI()
         
-        tweetView.replyButtonClosure = {
-            let delegate = MessageViewDelegate(tableViewToBeReloadedUponCompletion: self, tweetInReplyTo: tweet)
-            delegate.present(mode: .Reply)
-        }
-        
-        tweetView.retweetButtonClosure = {
-            self.hostingVC.loadMoreTweets(mode: .RefreshTweets)
-        }
+        setUpTweetViewClosures(tweetView: tweetView)
         
         if let favorited = tweet.favorited {
             tweetView.configureFavoriteButton(favorited: favorited)
@@ -193,11 +186,49 @@ class TweetTableView: UITableView, UITableViewDataSource, UITableViewDelegate, U
                     vc.cell = cell
                     
                     if let navigationController = UIApplication.shared.keyWindow?.rootViewController as? UINavigationController {
+                        vc.setUpTweetViewClosures = { tweetView in
+                            self.setUpTweetViewClosures(tweetView: tweetView)
+                        }
                         vc.completionBlock = { tweetView in
                             self.reloadRows(at: [indexPath], with: .automatic)
                         }
                         navigationController.pushViewController(vc, animated: true)
                     }
+                }
+            }
+        }
+    }
+    /* ==================================================================================================== */
+    
+    
+    /* ====================================================================================================
+        MARK: - Helper methods
+        DESCRIPTION: Set up listening closures for the TweetView
+     ====================================================================================================== */
+    private func setUpTweetViewClosures(tweetView: TweetView) {
+        tweetView.replyButtonClosure = {
+            let delegate = MessageViewDelegate(tableViewToBeReloadedUponCompletion: self, tweetInReplyTo: tweetView.tweet)
+            delegate.present(mode: .Reply)
+        }
+        
+        tweetView.retweetButtonClosure = { retweeted, retweetId in
+            if let retweeted = retweeted {
+                if retweeted {
+                    self.hostingVC.loadMoreTweets(mode: .RefreshTweets)
+                } else {
+                    self.tweets = self.tweets.filter { currentTweet in
+                        if let currentRetweetId = currentTweet.retweetId,
+                            let retweetId = retweetId,
+                            currentRetweetId == retweetId {
+                            if let currentTweetUserScreenName = currentTweet.screenName,
+                                let currentUserScreenName = User.currentUser?.screenName,
+                                currentTweetUserScreenName == currentUserScreenName {
+                                return false
+                            }
+                        }
+                        return true
+                    }
+                    self.reloadData()
                 }
             }
         }

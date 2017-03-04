@@ -34,7 +34,7 @@ class TweetView: UIStackView {
     
     var cellHeightAdjustmentClosure: ((Void) -> Void)?
     var replyButtonClosure: ((Void) -> Void)?
-    var retweetButtonClosure: ((Void) -> Void)?
+    var retweetButtonClosure: ((Bool?, String?) -> Void)?
     
     /* ====================================================================================================
         MARK: - IBActions
@@ -49,14 +49,19 @@ class TweetView: UIStackView {
         if let retweeted = tweet.retweeted {
             TwitterClient.shared?.retweet(mode: (retweeted ? .Unretweet : .Retweet),
                                           tweet: tweet,
-                                          success: { (_) in
+                                          success: { retweetId in
                                             self.tweet.retweeted = !retweeted
                                             self.tweet.retweetCount += (retweeted ? -1 : 1)
                                             DispatchQueue.main.async {
-                                                self.setupRetweetStatView(completion: self.cellHeightAdjustmentClosure)
+                                                if !retweeted {
+                                                    // Need to get retweet id for unretweeet later
+                                                    self.getIsRetweetedByCurrentUser(completion: self.cellHeightAdjustmentClosure)
+                                                } else {
+                                                    self.setupRetweetStatView(completion: self.cellHeightAdjustmentClosure)
+                                                }
                                                 self.configureRetweetButton(retweeted: !retweeted)
-                                                self.retweetButtonClosure?()
-                                            }},
+                                            }
+                                            self.retweetButtonClosure?(self.tweet.retweeted, retweetId) },
                                           failure: { (error) in
                                             print(error.localizedDescription)}
             )

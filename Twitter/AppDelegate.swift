@@ -10,7 +10,7 @@ import UIKit
 import BDBOAuth1Manager
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
@@ -18,21 +18,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIGestureRecognizerDelega
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "TweetsNavigationController") as! UINavigationController
-        
-        _ = User.loadAccessToken()
-        
-        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(self.presentAccountListViewController(gesture:)))
-        longPressRecognizer.delegate = self
-        vc.navigationBar.addGestureRecognizer(longPressRecognizer)
-        vc.navigationBar.isUserInteractionEnabled = true
-        window?.rootViewController = vc
+        if let _ = User.currentUser {
+            _ = User.loadAccessToken()
+            
+            let vc = storyboard.instantiateViewController(withIdentifier: "LongPressNavigationController") as! LongPressNavigationController
+            window?.rootViewController = vc
+        } else {
+            let vc = storyboard.instantiateInitialViewController()
+            window?.rootViewController = vc
+        }
         
         NotificationCenter.default.addObserver(
             forName: User.userDidLogoutNotification,
             object: nil,
             queue: .main) { (_) in
-                let storyboard = UIStoryboard(name: "Main", bundle: nil)
                 let vc = storyboard.instantiateInitialViewController()
                 self.window?.rootViewController = vc
         }
@@ -66,30 +65,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIGestureRecognizerDelega
         TwitterClient.shared?.handleOpenUrl(url: url)
         return true
     }
-    
-    func presentAccountListViewController(gesture: UILongPressGestureRecognizer) {
-        if gesture.state == .began {
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            if let vc = storyboard.instantiateViewController(withIdentifier: "AccountListViewController") as? AccountListViewController {
-                vc.transitioningDelegate = self
-                vc.modalPresentationStyle = .custom
-                
-                let rootVC = UIApplication.shared.keyWindow?.rootViewController
-                rootVC?.present(vc, animated: true, completion: nil)
-            }
-        }
-    }
-    
-    /* ====================================================================================================
-        MARK: - UIViewControllerTransitioningDelegate method with Facebook POP
-     ====================================================================================================== */
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return PresentingAnimationController()
-    }
-    
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return DismissingAnimationController()
-    }
-    /* ==================================================================================================== */
 }
 

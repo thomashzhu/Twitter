@@ -243,28 +243,7 @@ class TwitterClient: BDBOAuth1SessionManager {
         case Retweet, Unretweet
     }
     
-    func retweet(mode: RetweetMode, tweet: Tweet, success: @escaping (Void) -> Void, failure: @escaping (Error) -> Void) {
-        func unretweet(retweetId: String) {
-            self.post("1.1/statuses/destroy/\(retweetId).json",
-                parameters: nil,
-                progress: nil,
-                success: { _ in
-                    if let retweetedUserScreenName = tweet.retweetUserScreenName {
-                        if let currentUserScreenName = User.currentUser?.screenName {
-                            if retweetedUserScreenName == currentUserScreenName {
-                                tweet.retweetUserScreenName = nil
-                            }
-                        }
-                    }
-                    tweet.retweetId = nil
-                    tweet.retweeted = false
-                    success()
-                },
-                failure: { (_, error: Error) in
-                    failure(error)
-            })
-        }
-        
+    func retweet(mode: RetweetMode, tweet: Tweet, success: @escaping (String?) -> Void, failure: @escaping (Error) -> Void) {
         switch mode {
         case .Retweet:
             if let id = tweet.id {
@@ -274,7 +253,7 @@ class TwitterClient: BDBOAuth1SessionManager {
                     success: { _ in
                         // Not generate tweet.retweetId to save API call
                         tweet.retweeted = true
-                        success()
+                        success(nil)
                     },
                     failure: { (_, error: Error) in
                         failure(error)
@@ -282,17 +261,22 @@ class TwitterClient: BDBOAuth1SessionManager {
             }
         case .Unretweet:
             if let retweetId = tweet.retweetId {
-                unretweet(retweetId: retweetId)
-            } else if let id = tweet.id {
-                get("https://api.twitter.com/1.1/statuses/show.json?id=\(id)",
-                    parameters: ["include_my_retweet": 1],
+                self.post("1.1/statuses/destroy/\(retweetId).json",
+                    parameters: nil,
                     progress: nil,
-                    success: { (_, response: Any?) in
-                        if let fullTweetDictionary = response as? [String: AnyObject] {
-                            if let retweetId = fullTweetDictionary["current_user_retweet"]?["id_str"] as? String {
-                                unretweet(retweetId: retweetId)
+                    success: { _ in
+                        if let retweetedUserScreenName = tweet.retweetUserScreenName {
+                            if let currentUserScreenName = User.currentUser?.screenName {
+                                if retweetedUserScreenName == currentUserScreenName {
+                                    tweet.retweetUserScreenName = nil
+                                }
                             }
-                        }},
+                        }
+                        let tweetId = tweet.retweetId
+                        tweet.retweetId = nil
+                        tweet.retweeted = false
+                        success(tweetId)
+                },
                     failure: { (_, error: Error) in
                         failure(error)
                 })
