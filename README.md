@@ -81,47 +81,56 @@ Describe any challenges encountered while building the app.
 
 # Project 5 - Twitter
 
-Time spent: **X** hours spent in total
+Time spent: **18.5** hours spent in total
 
 ## User Stories
 
 The following **required** functionality is completed:
 
-- [ ] Tweet Details Page: User can tap on a tweet to view it, with controls to retweet, favorite, and reply.
-- [ ] Profile page:
-   - [ ] Contains the user header view
-   - [ ] Contains a section with the users basic stats: # tweets, # following, # followers
-- [ ] Home Timeline: Tapping on a user image should bring up that user's profile page
+- [X] Tweet Details Page: User can tap on a tweet to view it, with controls to retweet, favorite, and reply.
+- [X] Profile page:
+   - [X] Contains the user header view
+   - [X] Contains a section with the users basic stats: # tweets, # following, # followers
+- [X] Home Timeline: Tapping on a user image should bring up that user's profile page
 - [X] Compose Page: User can compose a new tweet by tapping on a compose button.
 
 The following **optional** features are implemented:
 
 - [X] When composing, you should have a countdown in the upper right for the tweet limit.
 - [X] After creating a new tweet, a user should be able to view it in the timeline immediately without refetching the timeline from the network.
-- [ ] Profile Page
-   - [ ] Implement the paging view for the user description.
-   - [ ] As the paging view moves, increase the opacity of the background screen. See the actual Twitter app for this effect
-   - [ ] Pulling down the profile page should blur and resize the header image.
-- [ ] Account switching
-   - [ ] Long press on tab bar to bring up Account view with animation
-   - [ ] Tap account to switch to
-   - [ ] Include a plus button to Add an Account
-   - [ ] Swipe to delete an account
+- [X] Profile Page
+   - [X] Implement the paging view for the user description.
+   - [X] As the paging view moves, increase the opacity of the background screen. See the actual Twitter app for this effect
+   - [X] Pulling down the profile page should blur and resize the header image.
+- [X] Account switching
+   - [X] Long press on tab bar to bring up Account view with animation
+   - [X] Tap account to switch to
+   - [X] Include a plus button to Add an Account
+   - [X] Swipe to delete an account
 
 The following **additional** features are implemented:
 
-- [ ] List anything else that you can get done to improve the app functionality!
+- [X] Unretweeting in the home timeline will update the home timeline, without network fetching
+- [X] Unretweeting in the detail page will update the home timeline, without network fetching
+- [X] Saved users only have to log in once
+- [X] Add a friendly message to remind user deleting their current session will log him/her out of the app
+- [X] Writing a new tweet in current user’s profile will update his/her own timeline
+- [X] Rounded corners for all profile pictures
+- [X] User profile will show “Me” instead of the actual user’s screen name, if the current user is viewing his/her own profile
+- [X] User description will show “Nothing yet…” if it’s blank
+- [X] User list indicates whom is the current user
+- [X] Updated the new/reply message pane UI
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
-1. 
-2. 
+1. How to set up UIScrollView
+2. How to better organize code
 
 ## Video Walkthrough 
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/QGxDdKA.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
@@ -129,9 +138,13 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 Describe any challenges encountered while building the app.
 
+- UIScrollView
+- Programmatic constraints
+- Code refactoring using protocols, delegates, custom reusable views
+
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright [2017] [Thomas Zhu]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
